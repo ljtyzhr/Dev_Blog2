@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 
+
 class Config(object):
     DEBUG = False
     MONGODB_SETTINGS = {'DB': 'dev_blog2'}
@@ -8,40 +9,48 @@ class Config(object):
     MAIN_TITLE = u'Sea_Kudo的博客'
     SITE_URL = 'http://tuzii.me'
     KEYWORDS = u'前端开发, 互联网, 技术博客, 个人博客, 生活记录'
-    DESCRIPTION  = u'并不是所有唯美的故事 都伴有精彩的风景. 我只愿尽我所能 带你看遍整个春夏秋冬.'
+    DESCRIPTION = u'并不是所有唯美的故事 都伴有精彩的风景. 我只愿尽我所能 带你看遍整个春夏秋冬.'
     EMAIL = 'he.kang@dev-engine.com'
+
 
 class ProductionConfig(Config):
     SECRET_KEY = ''
-    FRONTEND_MIN_JS = '/static/js/frontend.min.js?v=%s' % random.choice(xrange(100))
-    FRONTEND_MIN_CSS = '/static/css/frontend.min.css?v=%s' % random.choice(xrange(100))
+    FRONTEND_MIN_JS = '/static/js/frontend.min.js?v=%s' % random.choice(
+        xrange(100))
+    FRONTEND_MIN_CSS = '/static/css/frontend.min.css?v=%s' % random.choice(
+        xrange(100))
     ERROR_MIN_JS = '/static/js/404.min.js?v=%s' % random.choice(xrange(100))
     ERROR_MIN_CSS = '/static/css/404.min.css?v=%s' % random.choice(xrange(100))
-    ADMIN_MIN_JS = '/admin/static/js/backend.min.js?v=%s' % random.choice(xrange(100))
-    ADMIN_MIN_CSS = '/admin/static/css/admin.min.css?v=%s' % random.choice(xrange(100))
+    ADMIN_MIN_JS = '/admin/static/js/backend.min.js?v=%s' % random.choice(
+        xrange(100))
+    ADMIN_MIN_CSS = '/admin/static/css/admin.min.css?v=%s' % random.choice(
+        xrange(100))
     ANALYTICS = '''<script type="text/javascript">
                     </script>
                 '''
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     DEBUG_TB_PANELS = (
-            'flask.ext.debugtoolbar.panels.versions.VersionDebugPanel',
-            'flask.ext.debugtoolbar.panels.timer.TimerDebugPanel',
-            'flask.ext.debugtoolbar.panels.headers.HeaderDebugPanel',
-            'flask.ext.debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-            'flask.ext.debugtoolbar.panels.template.TemplateDebugPanel',
-            'flask.ext.debugtoolbar.panels.logger.LoggingPanel',
-            'flask.ext.mongoengine.panels.MongoDebugPanel'
-            )
+        'flask.ext.debugtoolbar.panels.versions.VersionDebugPanel',
+        'flask.ext.debugtoolbar.panels.timer.TimerDebugPanel',
+        'flask.ext.debugtoolbar.panels.headers.HeaderDebugPanel',
+        'flask.ext.debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
+        'flask.ext.debugtoolbar.panels.template.TemplateDebugPanel',
+        'flask.ext.debugtoolbar.panels.logger.LoggingPanel',
+        'flask.ext.mongoengine.panels.MongoDebugPanel'
+    )
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     SITE_URL = 'http://vm.tuzii.me'
+
 
 class SmtpConfig(Config):
     SERVER = 'smtp.gmail.com'
     PORT = 587
     USER = 'no-reply@dev-engine.com'
     PASSWORD = ''
+
 
 class UpyunConfig(Config):
     URL = ''

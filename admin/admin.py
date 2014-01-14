@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
-import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask.ext.login import (current_user, login_required,
+from flask.ext.login import (LoginManager, current_user, login_required,
                              login_user, logout_user, UserMixin)
-from jinja2 import TemplateNotFound
 
 from model.models import (Diary, Category, Comment, Tag, Photo, StaticPage,
                           CommentEm)
@@ -17,6 +15,10 @@ from utils.helper.re_helper import ReHelper
 
 admin = Blueprint('admin', __name__, template_folder='templates',
                   static_folder='static')
+
+login_manager = LoginManager()
+login_manager.login_view = "admin.login"
+login_manager.login_message = u"Please log in to access this page."
 
 
 class User(UserMixin):
@@ -35,7 +37,13 @@ class User(UserMixin):
         return self.active
 
 
-@admin.route('/login', methods=['GET', 'POST'])
+@login_manager.user_loader
+def load_user(id):
+    user = UserModel.objects.first()
+    return User(user.name, user.pk)
+
+
+@admin.route("/login", methods=["GET", "POST"])
 def login():
     """Login page for user to auth.
 
@@ -57,22 +65,18 @@ def login():
         POST:
             none
     """
-    error = None
-    if request.method == 'POST' and 'username' in request.form:
-        user = UserModel.objects.first()
+    if request.method == "POST" and "username" in request.form:
         username = request.form["username"]
         password = request.form["password"]
+        user = UserModel.objects(name=username).first()
 
-        if username == user.name and check_password_hash(user.password,
-                                                         password):
-            if login_user(User(user.name, user.pk)):
-                flash("Logged in!")
-                return redirect(request.args.get("next") or url_for("index.index"))
-            else:
-                flash("Sorry, but you could not log in.")
+        if user and check_password_hash(user.password, password):
+            login_user(User(user.name, user.pk))
+            return redirect(request.args.get("next") or url_for("admin.index"))
         else:
-            flash(u"Invalid username.")
-    return render_template('admin/login.html', error=error)
+            return redirect(url_for("admin.login"))
+    else:
+        return render_template("admin/login.html")
 
 
 @admin.route("/logout")
@@ -83,7 +87,6 @@ def logout():
     call this method for logout current_user.
     """
     logout_user()
-    flash("Logged out.")
     return redirect(url_for("admin.index"))
 
 

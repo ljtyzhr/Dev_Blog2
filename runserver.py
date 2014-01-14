@@ -6,44 +6,30 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 import tornado.web
 
-from flask import Flask, render_template, send_from_directory
-from config import *
+from flask import Flask, render_template, send_from_directory, request
+from config import Config, SmtpConfig
 from frontend.frontend import frontend
-from admin.admin import admin, User
+from admin.admin import admin, login_manager
 from model.models import db
-from model.models import User as UserModel
 
 import logging
 from logging.handlers import SMTPHandler
 from utils.email_util import EncodingFormatter
 
-from flask.ext.login import LoginManager
-
 from flask_debugtoolbar import DebugToolbarExtension
 
-USED_CONF = 'config.ProductionConfig'
+USED_CONF = 'config.DevelopmentConfig'
 
 app = Flask(__name__)
 app.register_blueprint(frontend)
 app.register_blueprint(admin, url_prefix='/admin')
 
-
 app.config.from_object(USED_CONF)
-
-login_manager = LoginManager()
-login_manager.login_view = "admin.login"
-login_manager.login_message = u"Please log in to access this page."
 
 
 @app.route('/robots.txt')
 def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
-
-
-@login_manager.user_loader
-def load_user(id):
-    user = UserModel.objects.first()
-    return User(user.name, user.pk)
 
 
 @app.errorhandler(404)
@@ -72,25 +58,21 @@ mail_handler = SMTPHandler(
 
 define("port", default=8888, help="run on the given port", type=int)
 
-if USED_CONF == 'config.ProductionConfig':
-    env = False
-else:
-    env = True
 
-if not env:
+if not app.debug:
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
-    mail_handler.setFormatter(EncodingFormatter('%(message)s', encoding='utf-8'))
+    mail_handler.setFormatter(EncodingFormatter('%(message)s',
+                                                encoding='utf-8'))
 
 
 def main():
-    tornado.web.Application(debug=env)
+    tornado.web.Application(debug=app.debug)
     http_server = HTTPServer(WSGIContainer(app))
     enable_pretty_logging()
     options.parse_command_line()
     http_server.listen(options.port)
     IOLoop.instance().start()
-    print 'Quit the server with CONTROL-C'
 
 if __name__ == "__main__":
     main()
