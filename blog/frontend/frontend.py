@@ -5,11 +5,12 @@ from operator import attrgetter
 import PyRSS2Gen
 from flask import (Blueprint, render_template, redirect, request, url_for,
                    make_response, abort)
-from jinja2 import TemplateNotFound
 from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
                           Photo, StaticPage)
-from config import *
+from config import Config
 from tasks.email_tasks import send_email_task
+from functions import Functions
+from templates import templates
 
 frontend = Blueprint('frontend', __name__, template_folder='templates',
                      static_folder='static')
@@ -31,8 +32,9 @@ def home():
         profile: user object
         next_page: boolen
     """
-    profile = User.objects.first()
-    diaries_all = Diary.objects.order_by('-publish_time')
+    functions = Functions()
+    profile = functions.get_profile()
+    diaries_all = functions.get_all_diaries('-publish_time')
     diaries = diaries_all[:5]
     diary_num = len(diaries_all)
     if diary_num > 5:
@@ -40,12 +42,12 @@ def home():
     else:
         next_page = False
 
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
+    categories = functions.get_all_categories('-publish_time')
+    pages = functions.get_all_pages('-publish_time')
 
-    return render_template('frontend/home.html', diaries=diaries,
-                           categories=categories, pages=pages, profile=profile,
-                           next_page=next_page)
+    return render_template(templates['home'],
+                           diaries=diaries, categories=categories,
+                           pages=pages, profile=profile, next_page=next_page)
 
 
 @frontend.route('/diary/<diary_id>/<diary_title>')
@@ -68,13 +70,14 @@ def diary_detail(diary_id, diary_title=None):
         prev: if has previous diary
         next: if has next diary
     """
-    profile = User.objects.first()
-    diary = Diary.objects(pk=diary_id).first()
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
+    functions = Functions()
+    profile = functions.get_profile()
+    diary = functions.get_diary(diary_id=diary_id)
+    categories = functions.get_all_categories('-publish_time')
+    pages = functions.get_all_pages('-publish_time')
 
-    diary_first = Diary.objects.order_by('-publish_time').first()
-    diary_last = Diary.objects.order_by('publish_time').first()
+    diary_first = functions.get_first_diary()
+    diary_last = functions.get_last_diary()
 
     if diary_first == diary:
         prev = False
@@ -89,10 +92,10 @@ def diary_detail(diary_id, diary_title=None):
     guest_name = request.cookies.get('guest_name')
     guest_email = request.cookies.get('guest_email')
 
-    return render_template('frontend/diary/detail.html', diary=diary,
-                           categories=categories, guest_name=guest_name,
-                           guest_email=guest_email, pages=pages, profile=profile,
-                           prev=prev, next=next)
+    return render_template(templates['diary_detail'],
+                           diary=diary, categories=categories,
+                           guest_name=guest_name, guest_email=guest_email,
+                           pages=pages, profile=profile, prev=prev, next=next)
 
 
 @frontend.route('/diary/route/<prev_or_next>/<diary_id>')

@@ -1,0 +1,72 @@
+{% extends 'frontend/themes/default/base.html' %}
+{% block title %}{{ diary.title }}{% endblock %}
+{% block content %}
+    <article id="post-1" class="post-1 post type-post status-publish format-standard hentry category-uncategorized">
+        <header class="entry-header">
+            <h1 class="entry-title">{{ self.title() }}</h1>
+            <div class="comments-link">
+                <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="《{{ diary.title }}》上的评论">{{ diary.comments|count }}条回复</a>
+            </div><!-- .comments-link -->
+        </header><!-- .entry-header -->
+
+        <div class="entry-content">
+            {{ diary.html|safe }}
+        </div><!-- .entry-content -->
+
+        <footer class="entry-meta">
+            本条目发布于
+            <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
+                <time class="entry-date" datetime="{{ diary.publish_time }}">{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
+            </a>。属于
+            <a href="#" title="查看{{ diary.category }}中的全部文章" rel="category tag">{{ diary.category }}</a>
+            分类。
+            <span class="by-author">作者是
+                <span class="author vcard">
+                    <a class="url fn n" rel="author">{{ diary.author.name }}</a>
+                </span>。
+            </span>
+            <span class="edit-link"><a class="post-edit-link" href="#">编辑</a></span>
+        </footer><!-- .entry-meta -->
+    </article><!-- #post -->
+
+    <nav class="nav-single">
+        <h3 class="assistive-text">文章导航</h3>
+        <span class="nav-previous"><a href="" rel="prev"><span class="meta-nav">←</span> Demo post 2</a></span>
+        <span class="nav-next"></span>
+    </nav><!-- .nav-single -->
+
+    <div id="comments" class="comments-area">
+        <h2 class="comments-title">
+            《<span>{{ self.title() }}</span>》上有{{ diary.comments|count }}条评论
+        </h2>
+
+        <ol class="commentlist">
+            {% for c in diary.comments %}
+            <li class="comment">
+                <article class="comment">
+                    <header class="comment-meta comment-author vcard">
+                        <!--<img alt="" src="" class="avatar avatar-44 photo avatar-default" height="44" width="44">-->
+                        <cite><b class="fn"><a rel="external nofollow" class="url">{{ c.author }}</a></b> </cite>
+                        <a><time datetime="{{ diary.publish_time }}">{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}</time></a>
+                    </header><!-- .comment-meta -->
+
+                    <section class="comment-content comment">
+                        <p>{{ c.content }}</p>
+                        <p class="edit-link">
+                            <a class="comment-edit-link" href="">编辑</a>
+                        </p>
+                    </section><!-- .comment-content -->
+
+                    <div class="reply">
+                        <a class="comment-reply-link" href="">回复</a> <span>↓</span>
+                    </div><!-- .reply -->
+                </article><!-- #comment-## -->
+            </li><!-- #comment-## -->
+            {% endfor %}
+        </ol><!-- .commentlist -->
+
+        {% include 'frontend/themes/default/element/reply_form.html' %}
+
+    </div><!-- #comments .comments-area -->
+
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>{% block title %}{% endblock %} - {{ config['MAIN_TITLE'] }}</title>
+  <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext" type="text/css" media="all"> -->
+  <link rel="stylesheet" href="{{ url_for('frontend.static', filename='themes/default/css/default.css') }}" type="text/css" media="all">
+</head>
+
+<body class="home blog logged-in custom-font-enabled single-author">
+  <div id="page" class="hfeed site">
+    <header id="masthead" class="site-header" role="banner">
+      <hgroup>
+        <h1 class="site-title"><a href="/" title="{{ config['MAIN_TITLE'] }}" rel="home">{{ config['MAIN_TITLE'] }}</a></h1>
+        <h2 class="site-description">{{ profile.signature }}</h2>
+      </hgroup>
+      <nav id="site-navigation" class="main-navigation" role="navigation">
+        <h3 class="menu-toggle">菜单</h3>
+        <a class="assistive-text" href="#content" title="跳至内容">跳至内容</a>
+        <div class="nav-menu">
+          <ul>
+            <li class="current_page_item"><a href="http://127.0.0.1:8888/wordpress/">首页</a></li>
+            {% for p in pages %}
+            <li class="page_item"><a href="{{ url_for('frontend.page', page_url=p.url) }}">{{ p.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </nav><!-- #site-navigation -->
+    </header><!-- #masthead -->
+
+    <div id="main" class="wrapper">
+      <div id="primary" class="site-content">
+        <div id="content" role="main">
+          {% block content %}{% endblock %}
+        </div><!-- #content -->
+      </div><!-- #primary -->
+
+
+      <div id="secondary" class="widget-area" role="complementary">
+        <aside id="search-2" class="widget widget_search">
+          <form role="search" method="get" id="searchform" class="searchform" action="http://127.0.0.1:8888/wordpress/">
+            <div>
+              <label class="screen-reader-text" for="s">搜索：</label>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="搜索" />
+            </div>
+          </form>
+        </aside>
+
+        <aside id="recent-posts-2" class="widget widget_recent_entries">
+         <h3 class="widget-title">近期文章</h3>   
+         <ul>
+          <li>
+            <a href="http://127.0.0.1:8888/wordpress/hello-world/">世界，你好！</a>
+          </li>
+          <li>
+            <a href="http://127.0.0.1:8888/wordpress/demo-post-2/">demo post 2</a>
+          </li>
+          <li>
+            <a href="http://127.0.0.1:8888/wordpress/demo-post-10/">demo post 10</a>
+          </li>
+          <li>
+            <a href="http://127.0.0.1:8888/wordpress/demo-post-8/">demo post 8</a>
+          </li>
+          <li>
+            <a href="http://127.0.0.1:8888/wordpress/demo-post-13/">demo post 13</a>
+          </li>
+        </ul>
+      </aside>
+
+      <aside id="recent-comments-2" class="widget widget_recent_comments">
+        <h3 class="widget-title">近期评论</h3>
+        <ul id="recentcomments">
+          <li class="recentcomments">
+            <a href='http://commenter.url' rel='external nofollow' class='url'>commenter 10</a>
+            发表在《<a href="http://127.0.0.1:8888/wordpress/sample-page/#comment-11">示例页面</a>》
+          </li>
+          <li class="recentcomments">
+            <a href='http://commenter.url' rel='external nofollow' class='url'>commenter 11</a>
+            发表在《<a href="http://127.0.0.1:8888/wordpress/sample-page/#comment-12">示例页面</a>》
+          </li>
+          <li class="recentcomments">
+            <a href='http://commenter.url' rel='external nofollow' class='url'>commenter 12</a>
+            发表在《<a href="http://127.0.0.1:8888/wordpress/sample-page/#comment-13">示例页面</a>》
+          </li>
+          <li class="recentcomments">
+            <a href='http://commenter.url' rel='external nofollow' class='url'>commenter 13</a>
+            发表在《<a href="http://127.0.0.1:8888/wordpress/sample-page/#comment-14">示例页面</a>》
+          </li>
+          <li class="recentcomments">
+            <a href='http://commenter.url' rel='external nofollow' class='url'>commenter 50</a>
+            发表在《<a href="http://127.0.0.1:8888/wordpress/demo-post-1/#comment-51">demo post 1</a>》
+          </li>
+        </ul>
+      </aside>
+
+      <aside id="archives-2" class="widget widget_archive">
+        <h3 class="widget-title">文章归档</h3>   
+        <ul>
+          <li><a href='http://127.0.0.1:8888/wordpress/2014/01/'>2014年一月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2013/07/'>2013年七月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2013/02/'>2013年二月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2012/10/'>2012年十月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2012/08/'>2012年八月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2012/04/'>2012年四月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/11/'>2011年十一月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/09/'>2011年九月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/08/'>2011年八月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/06/'>2011年六月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/05/'>2011年五月</a></li>
+          <li><a href='http://127.0.0.1:8888/wordpress/2011/03/'>2011年三月</a></li>
+        </ul>
+      </aside>
+
+      <aside id="categories-2" class="widget widget_categories">
+        <h3 class="widget-title">分类目录</h3>    
+        <ul>
+          <li class="cat-item cat-item-4"><a href="http://127.0.0.1:8888/wordpress/category/ellus/" title="查看ellus下的所有文章">ellus</a>
+          </li>
+          <li class="cat-item cat-item-7"><a href="http://127.0.0.1:8888/wordpress/category/igula-ut-mauris/" title="查看igula ut mauris下的所有文章">igula ut mauris</a>
+          </li>
+          <li class="cat-item cat-item-9"><a href="http://127.0.0.1:8888/wordpress/category/integer-ferm/" title="查看integer ferm下的所有文章">integer ferm</a>
+          </li>
+          <li class="cat-item cat-item-10"><a href="http://127.0.0.1:8888/wordpress/category/per-d/" title="查看per, d下的所有文章">per, d</a>
+          </li>
+          <li class="cat-item cat-item-6"><a href="http://127.0.0.1:8888/wordpress/category/rerit-phasel/" title="查看rerit. phasel下的所有文章">rerit. phasel</a>
+          </li>
+          <li class="cat-item cat-item-5"><a href="http://127.0.0.1:8888/wordpress/category/smo/" title="查看smo下的所有文章">smo</a>
+          </li>
+          <li class="cat-item cat-item-8"><a href="http://127.0.0.1:8888/wordpress/category/suspendisse/" title="查看suspendisse下的所有文章">suspendisse</a>
+          </li>
+          <li class="cat-item cat-item-2"><a href="http://127.0.0.1:8888/wordpress/category/tetur-adipi/" title="查看tetur adipi下的所有文章">tetur adipi</a>
+          </li>
+          <li class="cat-item cat-item-3"><a href="http://127.0.0.1:8888/wordpress/category/ut-leo-m/" title="查看ut leo m下的所有文章">ut leo m</a>
+          </li>
+          <li class="cat-item cat-item-1"><a href="http://127.0.0.1:8888/wordpress/category/uncategorized/" title="查看未分类下的所有文章">未分类</a>
+          </li>
+        </ul>
+      </aside>
+
+      <aside id="meta-2" class="widget widget_meta">
+        <h3 class="widget-title">功能</h3>
+        <ul>
+          <li><a href="http://127.0.0.1:8888/wordpress/wp-admin/">管理站点</a></li>     <li><a href="http://127.0.0.1:8888/wordpress/wp-login.php?action=logout&#038;_wpnonce=06149e1d50">登出</a></li>
+          <li><a href="http://127.0.0.1:8888/wordpress/feed/" title="使用rss 2.0订阅本站点内容">文章<abbr title="really simple syndication">rss</abbr></a></li>
+          <li><a href="http://127.0.0.1:8888/wordpress/comments/feed/" title="使用rss订阅本站点的所有文章的近期评论">评论<abbr title="really simple syndication">rss</abbr></a></li>
+          <li><a href="http://cn.wordpress.org/" title="基于wordpress，一个优美、先进的个人信息发布平台。">wordpress.org</a></li>     
+        </ul>
+      </aside>
+
+    </div><!-- #secondary -->
+  </div><!-- #main .wrapper -->
+  
+  <footer id="colophon" role="contentinfo">
+    <div class="site-info">
+      <a href="http://cn.wordpress.org/" title="优雅的个人发布平台">自豪地采用wordpress</a>
+    </div><!-- .site-info -->
+  </footer><!-- #colophon -->
+</div><!-- #page -->
+
+</body>
+</html>
