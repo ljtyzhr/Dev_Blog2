@@ -111,14 +111,13 @@ def diary_prev_or_next(prev_or_next, diary_id):
     Return:
         redirect: diary_detail_page
     """
+    functions = Functions()
+    diary = functions.get_diary(diary_id=diary_id)
+
     if prev_or_next == 'next':
-        diary = Diary.objects(pk=diary_id).first()
-        next_diary = Diary.objects(publish_time__lt=diary.publish_time
-                                   ).order_by('-publish_time').first()
+        next_diary = functions.get_next_diary(diary.publish_time)
     elif prev_or_next == 'prev':
-        diary = Diary.objects(pk=diary_id).first()
-        next_diary = Diary.objects(publish_time__gt=diary.publish_time
-                                   ).first()
+        next_diary = functions.get_prev_diary(diary.publish_time)
 
     try:
         return redirect(

@@ -25,6 +25,13 @@ class Functions(object):
     def get_last_diary(self):
         return Diary.objects.order_by('publish_time').first()
 
+    def get_next_diary(self, pub_time):
+        return Diary.objects(publish_time__lt=pub_time
+                             ).order_by('-publish_time').first()
+
+    def get_prev_diary(self, pub_time):
+        return Diary.objects(publish_time__gt=pub_time).first()
+
     """Category functions.
     Return category objects
     """

@@ -31,8 +31,12 @@
 
     <nav class="nav-single">
         <h3 class="assistive-text">文章导航</h3>
-        <span class="nav-previous"><a href="" rel="prev"><span class="meta-nav">←</span> Demo post 2</a></span>
-        <span class="nav-next"></span>
+        {% if prev %}
+        <span class="nav-previous"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='prev', diary_id=diary.pk) }}" rel="prev"><span class="meta-nav">←</span>上一篇</a></span>
+        {% endif %}
+        {% if next %}
+        <span class="nav-next"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='next', diary_id=diary.pk) }}" rel="next">下一篇<span class="meta-nav">→</span></a></span>
+        {% endif %}
     </nav><!-- .nav-single -->
 
     <div id="comments" class="comments-area">
