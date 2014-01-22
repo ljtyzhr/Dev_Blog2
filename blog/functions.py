@@ -94,17 +94,19 @@ class Functions(object):
             order: str defalut '-publish_time'
 
         Return:
-            next_page: boolean
-            prev_page: boolean
+            next: boolean
+            prev: boolean
             diaries: diaries list
         """
         size = end - start
-        next_page = False
+        prev = next = False
         diaries = Diary.objects.order_by(order)[start:end+1]
         if len(diaries) - size > 0:
-            next_page = True
+            next = True
+        if start != 0:
+            prev = True
 
-        return next_page, diaries
+        return prev, next, diaries[start:end]
 
     """Category functions.
     Return category objects

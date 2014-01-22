@@ -36,11 +36,11 @@ def home():
     profile = functions.get_profile()
     categories = functions.get_all_categories('-publish_time')
     pages = functions.get_all_pages('-publish_time')
-    next_page, diaries = functions.get_diary_list(0, 10)
+    prev, next, diaries = functions.get_diary_list(0, 10)
 
     return render_template(templates['home'],
                            diaries=diaries, categories=categories,
-                           pages=pages, profile=profile, next_page=next_page)
+                           pages=pages, profile=profile, next=next)
 
 
 @frontend.route('/diary/<diary_id>/<diary_title>')
@@ -121,20 +121,18 @@ def diary_list(page_num):
         page_num: current page_num
         profile: user object
     """
-    next_page = False
-    diary_num = len(Diary.objects)
-    categories = Category.objects.order_by('-publish_time')
-    profile = User.objects.first()
-    pages = StaticPage.objects.all()
+    functions = Functions()
+    profile = functions.get_profile()
+    categories = functions.get_all_categories('-publish_time')
+    pages = functions.get_all_pages('-publish_time')
 
-    diaries = Diary.objects.order_by('-publish_time')[
-        (int(page_num) - 1) * 5:int(page_num) * 5]
+    start = (int(page_num) - 1) * 10
+    end = int(page_num) * 10
 
-    if diary_num > int(page_num) * 5:
-        next_page = True
+    prev, next, diaries = functions.get_diary_list(start, end)
 
-    return render_template('frontend/diary/list.html', diaries=diaries,
-                           categories=categories, next_page=next_page,
+    return render_template(templates['diary_list'], diaries=diaries,
+                           categories=categories, next=next, prev=prev,
                            page_num=page_num, pages=pages, profile=profile)
 
 

@@ -1,42 +1,13 @@
 {% extends 'frontend/themes/default/base.html' %}
-{% block title %}首页{% endblock %}
+{% block title %} 首页 {% endblock %}
 {% block content %}
-  {% for d in diaries %}
-  <article class="post">
-      <header class="entry-header">
-          <h1 class="entry-title">
-              <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" rel="bookmark">{{ d.title }}</a>
-          </h1>
-          <div class="comments-link">
-              <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" title="《{{ d.title }}》上的评论">{{ d.comments|count }}条回复</a>
-          </div><!-- .comments-link -->
-      </header><!-- .entry-header -->
 
-      <div class="entry-content">
-          <p>{{ d.summary|safe }}</p>
-      </div><!-- .entry-content -->
+  {% include 'frontend/themes/default/element/diary_list.html' %}
 
-      <footer class="entry-meta">
-          本条目发布于
-          <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" title="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" rel="bookmark">
-              <time class="entry-date" datetime="{{ d.publish_time }}">{{ d.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
-          </a>。
-          属于
-          <a href="#" title="查看{{ d.category }}中的全部文章" rel="category tag">{{ d.category }}</a>分类。
-          <span class="by-author">作者是
-              <span class="author vcard">
-                  <a class="url fn n" rel="author">{{ d.author.name }}</a>
-              </span>。
-          </span>
-          <span class="edit-link"><a class="post-edit-link" href="#">编辑</a></span>
-      </footer><!-- .entry-meta -->
-  </article><!-- #post -->
-  {% endfor %}
   <nav id="nav-below" class="navigation" role="navigation">
       <h3 class="assistive-text">文章导航</h3>
-      {% if next_page %}
-      <div class="nav-previous"><a href="http://127.0.0.1:8888/wordpress/page/2/" ><span class="meta-nav">&larr;</span> 早期文章</a></div>
+      {% if next %}
+      <div class="nav-previous"><a href="{{ url_for('frontend.diary_list', page_num=2) }}" ><span class="meta-nav">&larr;</span> 早期文章</a></div>
       {% endif %}
-      <div class="nav-next"></div>
   </nav><!-- #nav-below .navigation -->
 {% endblock %}
