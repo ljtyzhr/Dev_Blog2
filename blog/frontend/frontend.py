@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
-import datetime
 from operator import attrgetter
-import PyRSS2Gen
 from flask import (Blueprint, render_template, redirect, request, url_for,
-                   make_response, abort)
+                   make_response, abort, Response)
 from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
                           Photo, StaticPage)
 from config import Config
@@ -134,6 +132,23 @@ def diary_list(page_num):
     return render_template(templates['diary_list'], diaries=diaries,
                            categories=categories, next=next, prev=prev,
                            page_num=page_num, pages=pages, profile=profile)
+
+
+@frontend.route('/feed')
+def rss():
+    """ RSS2 Support.
+
+        support xml for RSSItem with 12 diaries.
+
+    Args:
+        none
+    Return:
+        none
+    """
+    functions = Functions()
+    content = functions.get_rss(12)
+
+    return Response(content, mimetype='text/xml')
 
 
 @frontend.route('/category/<category_id>/<category_name>')
@@ -335,42 +350,6 @@ def comment_add():
             return response
         except Exception as e:
             return str(e)
-
-
-@frontend.route('/feed')
-def rss():
-    """ RSS2 Support.
-
-        support xml for RSSItem with 12 diaries.
-
-    Args:
-        none
-    Return:
-        diaries_object: list
-        site_settings: title, link, description
-    """
-    articles = Diary.objects.order_by('-publish_time')[:12]
-    items = []
-    for article in articles:
-        content = article.html
-
-        url = Config.SITE_URL + '/diary/' + str(article.pk) + '/' + \
-            article.title
-        items.append(PyRSS2Gen.RSSItem(
-            title=article.title,
-            link=url,
-            description=content,
-            guid=PyRSS2Gen.Guid(url),
-            pubDate=article.publish_time,
-        ))
-    rss = PyRSS2Gen.RSS2(
-        title=Config.MAIN_TITLE,
-        link=Config.SITE_URL,
-        description=Config.DESCRIPTION,
-        lastBuildDate=datetime.datetime.now(),
-        items=items
-    ).to_xml('utf-8')
-    return rss
 
 
 @frontend.route('/gallery', methods=['GET', 'POST'])

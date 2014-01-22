@@ -24,6 +24,7 @@
             {% for p in pages %}
             <li class="page_item"><a href="{{ url_for('frontend.page', page_url=p.url) }}">{{ p.title }}</a></li>
             {% endfor %}
+            <li class="page_item"><a href="/feed">RSS</a></li>
           </ul>
         </div>
       </nav><!-- #site-navigation -->

@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import datetime
+import PyRSS2Gen
+
+from config import Config
 from model.models import User, Diary, Category, StaticPage
 
 
@@ -119,3 +123,36 @@ class Functions(object):
     """
     def get_all_pages(self, order):
         return StaticPage.objects.order_by(order)
+
+    def get_rss(self, size):
+        """ RSS2 Support.
+
+            support xml for RSSItem with sized diaries.
+
+        Args:
+            none
+        Return:
+            rss: xml
+        """
+        articles = Diary.objects.order_by('-publish_time')[:size]
+        items = []
+        for article in articles:
+            content = article.html
+
+            url = Config.SITE_URL + '/diary/' + str(article.pk) + '/' + \
+                article.title
+            items.append(PyRSS2Gen.RSSItem(
+                title=article.title,
+                link=url,
+                description=content,
+                guid=PyRSS2Gen.Guid(url),
+                pubDate=article.publish_time,
+            ))
+        rss = PyRSS2Gen.RSS2(
+            title=Config.MAIN_TITLE,
+            link=Config.SITE_URL,
+            description=Config.DESCRIPTION,
+            lastBuildDate=datetime.datetime.now(),
+            items=items
+        ).to_xml('utf-8')
+        return rss
