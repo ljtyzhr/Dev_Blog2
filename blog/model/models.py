@@ -72,7 +72,11 @@ class Page(db.Document):
     publish_time = db.DateTimeField(default=datetime.now, required=True)
     update_time = db.DateTimeField(default=datetime.now, required=True)
 
-    meta = {'allow_inheritance': True}
+    meta = {
+        'indexes': ['pk', ('url', '-publish_time'), 'title'],
+        'ordering': ['-publish_time'],
+        'allow_inheritance': True
+    }
 
 
 class StaticPage(Page):

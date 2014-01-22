@@ -124,6 +124,9 @@ class Functions(object):
     def get_all_pages(self, order):
         return StaticPage.objects.order_by(order)
 
+    def get_page(self, page_url):
+        return StaticPage.objects(url=page_url).first()
+
     def get_rss(self, size):
         """ RSS2 Support.
 

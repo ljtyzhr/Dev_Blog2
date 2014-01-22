@@ -151,6 +151,33 @@ def rss():
     return Response(content, mimetype='text/xml')
 
 
+@frontend.route('/page/<page_url>')
+def page(page_url):
+    """CMS page.
+    show page for page_name.
+
+    Methods:
+        POST
+
+    Args:
+        page_url: string
+
+    Return:
+        categories: used for sidebar
+        page object
+        pages: used for top-nav
+        profile: user object
+    """
+    functions = Functions()
+    profile = functions.get_profile()
+    categories = functions.get_all_categories('-publish_time')
+    pages = functions.get_all_pages('-publish_time')
+    page = functions.get_page(page_url=page_url)
+
+    return render_template(templates['page'], page=page,
+                           categories=categories, pages=pages, profile=profile)
+
+
 @frontend.route('/category/<category_id>/<category_name>')
 def category_list(category_id, category_name=None):
     """Category list page.
@@ -386,29 +413,3 @@ def gallery():
         return render_template('frontend/gallery/index.html', photos=photos,
                                categories=categories, profile=profile,
                                pages=pages)
-
-
-@frontend.route('/page/<page_url>')
-def page(page_url):
-    """CMS page.
-    show page for page_name.
-
-    Methods:
-        POST
-
-    Args:
-        page_url: string
-
-    Return:
-        categories: used for sidebar
-        page object
-        pages: used for top-nav
-        profile: user object
-    """
-    profile = User.objects.first()
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
-    page = StaticPage.objects.get_or_404(url=page_url)
-
-    return render_template('frontend/page/index.html', page=page,
-                           categories=categories, pages=pages, profile=profile)
