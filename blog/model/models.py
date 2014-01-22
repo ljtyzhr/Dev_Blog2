@@ -26,7 +26,11 @@ class Diary(db.Document):
     publish_time = db.DateTimeField(default=datetime.now, required=True)
     update_time = db.DateTimeField(default=datetime.now, required=True)
 
-    meta = {'allow_inheritance': True}
+    meta = {
+        'indexes': ['pk', ('pk', '-publish_time'), 'category'],
+        'ordering': ['-publish_time'],
+        'allow_inheritance': True
+    }
 
 
 class Photo(db.Document):

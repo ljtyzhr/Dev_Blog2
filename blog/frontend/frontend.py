@@ -20,13 +20,13 @@ frontend = Blueprint('frontend', __name__, template_folder='templates',
 def home():
     """ HomePage.
 
-     list newest 5 diaries.
+     list newest 10 diaries.
 
     Args:
         none
 
     Return:
-        diaries: 5 diaries list
+        diaries: 10 diaries list
         categories: used for sidebar
         pages: used for top-nav
         profile: user object
@@ -34,16 +34,9 @@ def home():
     """
     functions = Functions()
     profile = functions.get_profile()
-    diaries_all = functions.get_all_diaries('-publish_time')
-    diaries = diaries_all[:5]
-    diary_num = len(diaries_all)
-    if diary_num > 5:
-        next_page = True
-    else:
-        next_page = False
-
     categories = functions.get_all_categories('-publish_time')
     pages = functions.get_all_pages('-publish_time')
+    next_page, diaries = functions.get_diary_list(0, 10)
 
     return render_template(templates['home'],
                            diaries=diaries, categories=categories,
@@ -72,22 +65,9 @@ def diary_detail(diary_id, diary_title=None):
     """
     functions = Functions()
     profile = functions.get_profile()
-    diary = functions.get_diary(diary_id=diary_id)
+    prev, next, diary = functions.get_diary_width_navi(diary_id=diary_id)
     categories = functions.get_all_categories('-publish_time')
     pages = functions.get_all_pages('-publish_time')
-
-    diary_first = functions.get_first_diary()
-    diary_last = functions.get_last_diary()
-
-    if diary_first == diary:
-        prev = False
-    else:
-        prev = True
-
-    if diary_last == diary:
-        next = False
-    else:
-        next = True
 
     guest_name = request.cookies.get('guest_name')
     guest_email = request.cookies.get('guest_email')
@@ -106,24 +86,21 @@ def diary_prev_or_next(prev_or_next, diary_id):
 
     Args:
         prev_or_next: string 'next' or 'prev'
-        diary_id: ObjectedId
+        diary_id: objectID
 
     Return:
         redirect: diary_detail_page
     """
     functions = Functions()
-    diary = functions.get_diary(diary_id=diary_id)
 
-    if prev_or_next == 'next':
-        next_diary = functions.get_next_diary(diary.publish_time)
-    elif prev_or_next == 'prev':
-        next_diary = functions.get_prev_diary(diary.publish_time)
+    next_diary = functions.get_next_or_prev_diary(prev_or_next, diary_id)
 
     try:
         return redirect(
             url_for('frontend.diary_detail', diary_id=next_diary.pk,
                     diary_title=next_diary.title))
-    except:
+    except Exception as e:
+        print str(e)
         abort(404)
 
 
@@ -131,13 +108,13 @@ def diary_prev_or_next(prev_or_next, diary_id):
 def diary_list(page_num):
     """Diary list page.
 
-    listed 5 diaries each page.
+    listed 10 diaries each page.
 
     Args:
         page_num: numberic and int
 
     Return:
-        diaries: listed 5 diaries objects
+        diaries: listed 10 diaries objects
         next_page: bool True or False
         categories: used for sidebar
         pages: used for top-nav
