@@ -7,7 +7,8 @@ from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
                           Photo, StaticPage)
 from config import Config
 from tasks.email_tasks import send_email_task
-from functions import Functions
+from functions import (user_func, diary_func, category_func, page_func,
+                       other_func)
 from templates import templates
 
 frontend = Blueprint('frontend', __name__, template_folder='templates',
@@ -30,11 +31,10 @@ def home():
         profile: user object
         next_page: boolen
     """
-    functions = Functions()
-    profile = functions.get_profile()
-    categories = functions.get_all_categories('-publish_time')
-    pages = functions.get_all_pages('-publish_time')
-    prev, next, diaries = functions.get_diary_list(0, 10)
+    profile = user_func.get_profile()
+    categories = category_func.get_all_categories('-publish_time')
+    pages = page_func.get_all_pages('-publish_time')
+    prev, next, diaries = diary_func.get_diary_list(0, 10)
 
     return render_template(templates['home'],
                            diaries=diaries, categories=categories,
@@ -61,11 +61,10 @@ def diary_detail(diary_id, diary_title=None):
         prev: if has previous diary
         next: if has next diary
     """
-    functions = Functions()
-    profile = functions.get_profile()
-    prev, next, diary = functions.get_diary_width_navi(diary_id=diary_id)
-    categories = functions.get_all_categories('-publish_time')
-    pages = functions.get_all_pages('-publish_time')
+    profile = user_func.get_profile()
+    prev, next, diary = diary_func.get_diary_width_navi(diary_id=diary_id)
+    categories = category_func.get_all_categories('-publish_time')
+    pages = page_func.get_all_pages('-publish_time')
 
     guest_name = request.cookies.get('guest_name')
     guest_email = request.cookies.get('guest_email')
@@ -89,9 +88,8 @@ def diary_prev_or_next(prev_or_next, diary_id):
     Return:
         redirect: diary_detail_page
     """
-    functions = Functions()
 
-    next_diary = functions.get_next_or_prev_diary(prev_or_next, diary_id)
+    next_diary = diary_func.get_next_or_prev_diary(prev_or_next, diary_id)
 
     try:
         return redirect(
@@ -119,15 +117,14 @@ def diary_list(page_num):
         page_num: current page_num
         profile: user object
     """
-    functions = Functions()
-    profile = functions.get_profile()
-    categories = functions.get_all_categories('-publish_time')
-    pages = functions.get_all_pages('-publish_time')
+    profile = user_func.get_profile()
+    categories = category_func.get_all_categories('-publish_time')
+    pages = page_func.get_all_pages('-publish_time')
 
     start = (int(page_num) - 1) * 10
     end = int(page_num) * 10
 
-    prev, next, diaries = functions.get_diary_list(start, end)
+    prev, next, diaries = diary_func.get_diary_list(start, end)
 
     return render_template(templates['diary_list'], diaries=diaries,
                            categories=categories, next=next, prev=prev,
@@ -145,8 +142,7 @@ def rss():
     Return:
         none
     """
-    functions = Functions()
-    content = functions.get_rss(12)
+    content = other_func.get_rss(12)
 
     return Response(content, mimetype='text/xml')
 
@@ -168,11 +164,10 @@ def page(page_url):
         pages: used for top-nav
         profile: user object
     """
-    functions = Functions()
-    profile = functions.get_profile()
-    categories = functions.get_all_categories('-publish_time')
-    pages = functions.get_all_pages('-publish_time')
-    page = functions.get_page(page_url=page_url)
+    profile = user_func.get_profile()
+    categories = category_func.get_all_categories('-publish_time')
+    pages = page_func.get_all_pages('-publish_time')
+    page = page_func.get_page(page_url=page_url)
 
     return render_template(templates['page'], page=page,
                            categories=categories, pages=pages, profile=profile)

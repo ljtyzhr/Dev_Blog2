@@ -6,13 +6,15 @@ from config import Config
 from model.models import User, Diary, Category, StaticPage
 
 
-class Functions(object):
-
+class UserFunctions(object):
     """User functions.
     Return author profile
     """
     def get_profile(self):
         return User.objects.first()
+
+
+class DiaryFunctions(object):
 
     def get_all_diaries(self, order):
         return Diary.objects.order_by(order)
@@ -112,12 +114,16 @@ class Functions(object):
 
         return prev, next, diaries[start:end]
 
+
+class CategoryFunctions(object):
     """Category functions.
     Return category objects
     """
     def get_all_categories(self, order):
         return Category.objects.order_by(order)
 
+
+class PageFunctions(object):
     """Page functions.
     Return page objects
     """
@@ -126,6 +132,9 @@ class Functions(object):
 
     def get_page(self, page_url):
         return StaticPage.objects(url=page_url).first()
+
+
+class OtherFunctions(object):
 
     def get_rss(self, size):
         """ RSS2 Support.
@@ -159,3 +168,10 @@ class Functions(object):
             items=items
         ).to_xml('utf-8')
         return rss
+
+# init functions
+user_func = UserFunctions()
+diary_func = DiaryFunctions()
+category_func = CategoryFunctions()
+page_func = PageFunctions()
+other_func = OtherFunctions()
