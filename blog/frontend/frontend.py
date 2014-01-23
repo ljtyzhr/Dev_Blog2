@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import json
 from operator import attrgetter
 from flask import (Blueprint, render_template, redirect, request, url_for,
@@ -173,41 +174,34 @@ def page(page_url):
                            categories=categories, pages=pages, profile=profile)
 
 
-@frontend.route('/category/<category_id>/<category_name>')
-def category_list(category_id, category_name=None):
+@frontend.route('/category/<category_name>')
+def category_list(category_name):
     """Category list page.
 
-    show 5 diaries in this page.
+    show 10 diaries in this page.
 
     Args:
-        category_id: categoryObjectID
-        category_name: only for SEO
+        category_name: string category_name
 
     Return:
-        next_page: bool True or False
+        next: bool True or False
+        prev: bool True or False
         page_num: 1
         category: category_name used for title
-        diaries: listed 5 diaries in each page
+        diaries: listed 10 diaries in each page
         categories: used in sidebar
         pages: used for top-nav
         profile: user object
     """
-    next_page = False
-    diary_num = len(Category.objects(pk=category_id)[0].diaries)
-    if diary_num > 5:
-        next_page = True
+    profile = user_func.get_profile()
+    categories = category_func.get_all_categories()
+    pages = page_func.get_all_pages()
+    prev, next, diaries = category_func.get_category_detail(category_name)
 
-    profile = User.objects.first()
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
-    diaries = sorted(Category.objects(pk=category_id)[0].diaries,
-                     key=attrgetter('publish_time'),
-                     reverse=True)[:5]
-
-    return render_template('frontend/category/list.html',
+    return render_template(templates['cate_list'],
                            category=category_name, diaries=diaries,
-                           categories=categories, next_page=next_page,
-                           page_num=1, category_id=category_id, pages=pages,
+                           categories=categories, next=next,
+                           page_num=1, pages=pages,
                            profile=profile)
 
 

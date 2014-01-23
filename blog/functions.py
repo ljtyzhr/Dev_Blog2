@@ -16,7 +16,7 @@ class UserFunctions(object):
 
 class DiaryFunctions(object):
 
-    def get_all_diaries(self, order):
+    def get_all_diaries(self, order='-publish_time'):
         return Diary.objects.order_by(order)
 
     def get_diary(self, diary_id):
@@ -119,15 +119,41 @@ class CategoryFunctions(object):
     """Category functions.
     Return category objects
     """
-    def get_all_categories(self, order):
+    def get_all_categories(self, order='-publish_time'):
         return Category.objects.order_by(order)
+
+    def get_category_detail(self, cat_name,
+                            start=0, end=10, order='-publish_time'):
+        """Category Diary list.
+        default query 10 diaries and return if there should be next or prev
+        page.
+
+        Args:
+            start: num defalut 0
+            end: num defalut 10
+            order: str defalut '-publish_time'
+
+        Return:
+            next: boolean
+            prev: boolean
+            diaries: diaries list
+        """
+        size = end - start
+        prev = next = False
+        diaries = Diary.objects(category=cat_name).order_by(order)[start:end+1]
+        if len(diaries) - size > 0:
+            next = True
+        if start != 0:
+            prev = True
+
+        return prev, next, diaries[start:end]
 
 
 class PageFunctions(object):
     """Page functions.
     Return page objects
     """
-    def get_all_pages(self, order):
+    def get_all_pages(self, order='-publish_time'):
         return StaticPage.objects.order_by(order)
 
     def get_page(self, page_url):
