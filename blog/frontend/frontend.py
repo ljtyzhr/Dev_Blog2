@@ -8,7 +8,7 @@ from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
                           Photo, StaticPage)
 from config import Config
 from tasks.email_tasks import send_email_task
-from functions import (user_func, diary_func, category_func, page_func,
+from functions import (user_func, diary_func, cate_func, page_func,
                        other_func)
 from templates import templates
 
@@ -33,7 +33,7 @@ def home():
         next_page: boolen
     """
     profile = user_func.get_profile()
-    categories = category_func.get_all_categories('-publish_time')
+    categories = cate_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
     prev, next, diaries = diary_func.get_diary_list(0, 10)
 
@@ -64,7 +64,7 @@ def diary_detail(diary_id, diary_title=None):
     """
     profile = user_func.get_profile()
     prev, next, diary = diary_func.get_diary_width_navi(diary_id=diary_id)
-    categories = category_func.get_all_categories('-publish_time')
+    categories = cate_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
 
     guest_name = request.cookies.get('guest_name')
@@ -119,7 +119,7 @@ def diary_list(page_num):
         profile: user object
     """
     profile = user_func.get_profile()
-    categories = category_func.get_all_categories('-publish_time')
+    categories = cate_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
 
     start = (int(page_num) - 1) * 10
@@ -166,7 +166,7 @@ def page(page_url):
         profile: user object
     """
     profile = user_func.get_profile()
-    categories = category_func.get_all_categories('-publish_time')
+    categories = cate_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
     page = page_func.get_page(page_url=page_url)
 
@@ -194,9 +194,9 @@ def category_list(category_name):
         profile: user object
     """
     profile = user_func.get_profile()
-    categories = category_func.get_all_categories()
+    categories = cate_func.get_all_categories()
     pages = page_func.get_all_pages()
-    prev, next, diaries = category_func.get_category_detail(category_name)
+    prev, next, diaries = cate_func.get_category_detail(category_name)
 
     return render_template(templates['cate_list'],
                            category=category_name, diaries=diaries,

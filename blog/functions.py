@@ -198,6 +198,6 @@ class OtherFunctions(object):
 # init functions
 user_func = UserFunctions()
 diary_func = DiaryFunctions()
-category_func = CategoryFunctions()
+cate_func = CategoryFunctions()
 page_func = PageFunctions()
 other_func = OtherFunctions()
