@@ -1,11 +1,11 @@
-{% extends 'frontend/themes/default/base.html' %}
+{% extends "frontend/themes/default/base.html" %}
 {% block title %}{{ diary.title }}{% endblock %}
 {% block content %}
-    <article id="post-1" class="post-1 post type-post status-publish format-standard hentry category-uncategorized">
+    <article class="post">
         <header class="entry-header">
             <h1 class="entry-title">{{ self.title() }}</h1>
             <div class="comments-link">
-                <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="《{{ diary.title }}》上的评论">{{ diary.comments|count }}条回复</a>
+                <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="Comment on {{ diary.title }}">{{ diary.comments|count }} Replies</a>
             </div><!-- .comments-link -->
         </header><!-- .entry-header -->
 
@@ -14,34 +14,34 @@
         </div><!-- .entry-content -->
 
         <footer class="entry-meta">
-            本条目发布于
+            This entry was posted in
+            <a href="#" title="View all posts in {{ diary.category }}" rel="category tag">{{ diary.category }}</a>
+            On
             <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
                 <time class="entry-date" datetime="{{ diary.publish_time }}">{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
-            </a>。属于
-            <a href="#" title="查看{{ diary.category }}中的全部文章" rel="category tag">{{ diary.category }}</a>
-            分类。
-            <span class="by-author">作者是
+            </a>
+            <span class="by-author">By
                 <span class="author vcard">
                     <a class="url fn n" rel="author">{{ diary.author.name }}</a>
                 </span>。
             </span>
-            <span class="edit-link"><a class="post-edit-link" href="#">编辑</a></span>
+            <span class="edit-link"><a class="post-edit-link" href="#">Edit</a></span>
         </footer><!-- .entry-meta -->
     </article><!-- #post -->
 
     <nav class="nav-single">
-        <h3 class="assistive-text">文章导航</h3>
+        <h3 class="assistive-text">Post navigation</h3>
         {% if prev %}
-        <span class="nav-previous"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='prev', diary_id=diary.pk) }}" rel="prev"><span class="meta-nav">←</span>上一篇</a></span>
+        <span class="nav-previous"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='prev', diary_id=diary.pk) }}" rel="prev"><span class="meta-nav">←</span>Previous</a></span>
         {% endif %}
         {% if next %}
-        <span class="nav-next"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='next', diary_id=diary.pk) }}" rel="next">下一篇<span class="meta-nav">→</span></a></span>
+        <span class="nav-next"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='next', diary_id=diary.pk) }}" rel="next">Next<span class="meta-nav">→</span></a></span>
         {% endif %}
     </nav><!-- .nav-single -->
 
     <div id="comments" class="comments-area">
         <h2 class="comments-title">
-            《<span>{{ self.title() }}</span>》上有{{ diary.comments|count }}条评论
+           {{ diary.comments|count }} thoughts on "<span>{{ self.title() }}</span>"
         </h2>
 
         <ol class="commentlist">
@@ -57,19 +57,19 @@
                     <section class="comment-content comment">
                         <p>{{ c.content }}</p>
                         <p class="edit-link">
-                            <a class="comment-edit-link" href="">编辑</a>
+                            <a class="comment-edit-link" href="">Edit</a>
                         </p>
                     </section><!-- .comment-content -->
 
                     <div class="reply">
-                        <a class="comment-reply-link" href="">回复</a> <span>↓</span>
+                        <a class="comment-reply-link" href="">Reply</a> <span>↓</span>
                     </div><!-- .reply -->
                 </article><!-- #comment-## -->
             </li><!-- #comment-## -->
             {% endfor %}
         </ol><!-- .commentlist -->
 
-        {% include 'frontend/themes/default/element/reply_form.html' %}
+        {% include "frontend/themes/default/element/reply_form.html" %}
 
     </div><!-- #comments .comments-area -->
 

@@ -1,13 +1,13 @@
 {% extends 'frontend/themes/default/base.html' %}
-{% block title %} 首页 {% endblock %}
+{% block title %} Home {% endblock %}
 {% block content %}
 
   {% include "frontend/themes/default/element/diary_list.html" %}
 
   <nav id="nav-below" class="navigation" role="navigation">
-      <h3 class="assistive-text">文章导航</h3>
+      <h3 class="assistive-text">Post navigation</h3>
       {% if next %}
-      <div class="nav-previous"><a href="{{ url_for('frontend.diary_list', page_num=2) }}" ><span class="meta-nav">&larr;</span> 早期文章</a></div>
+      <div class="nav-previous"><a href="{{ url_for('frontend.diary_list', page_num=2) }}" ><span class="meta-nav">&larr;</span> Older posts</a></div>
       {% endif %}
   </nav><!-- #nav-below .navigation -->
 {% endblock %}

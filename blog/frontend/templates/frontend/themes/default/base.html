@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
@@ -16,11 +16,11 @@
         <h2 class="site-description">{{ profile.signature }}</h2>
       </hgroup>
       <nav id="site-navigation" class="main-navigation" role="navigation">
-        <h3 class="menu-toggle">菜单</h3>
-        <a class="assistive-text" href="#content" title="跳至内容">跳至内容</a>
+        <h3 class="menu-toggle">Menu</h3>
+        <a class="assistive-text" href="#content" title="Skip to content">Skip to content</a>
         <div class="nav-menu">
           <ul>
-            <li class="current_page_item"><a href="/">首页</a></li>
+            <li class="current_page_item"><a href="/">Home</a></li>
             {% for p in pages %}
             <li class="page_item"><a href="{{ url_for('frontend.page', page_url=p.url) }}">{{ p.title }}</a></li>
             {% endfor %}
@@ -45,7 +45,7 @@
 
     <footer id="colophon" role="contentinfo">
       <div class="site-info">
-        <a href="https://github.com/ScenK/Dev_Blog2" title="Dev_blog2">Powered by Dev_blog2</a>
+        <a href="http://scenk.github.io/Dev_Blog2/" title="Dev_blog2">Powered by Dev_blog2</a>
       </div><!-- .site-info -->
     </footer><!-- #colophon -->
 

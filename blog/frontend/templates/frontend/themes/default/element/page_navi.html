@@ -1,9 +1,9 @@
   <nav id="nav-below" class="navigation" role="navigation">
-    <h3 class="assistive-text">文章导航</h3>
+    <h3 class="assistive-text">Post navigation</h3>
     {% if prev %}
-    <div class="nav-next"><a href="{{ url_for('frontend.diary_list', cat_name=cat_name, tag_name=tag_name, page_num=page_num|int-1) }}">较新文章 <span class="meta-nav">&rarr;</span></a></div>
+    <div class="nav-next"><a href="{{ url_for('frontend.diary_list', cat_name=cat_name, tag_name=tag_name, page_num=page_num|int-1) }}">Newer posts <span class="meta-nav">&rarr;</span></a></div>
     {% endif %}
     {% if next %}
-    <div class="nav-previous"><a href="{{ url_for('frontend.diary_list', cat_name=cat_name, tag_name=tag_name, page_num=page_num|int+1) }}"><span class="meta-nav">&larr;</span> 早期文章</a></div>
+    <div class="nav-previous"><a href="{{ url_for('frontend.diary_list', cat_name=cat_name, tag_name=tag_name, page_num=page_num|int+1) }}"><span class="meta-nav">&larr;</span> Older posts</a></div>
     {% endif %}
   </nav><!-- #nav-below .navigation -->

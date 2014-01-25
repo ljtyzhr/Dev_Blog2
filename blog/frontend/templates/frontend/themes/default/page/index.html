@@ -1,4 +1,4 @@
-{% extends 'frontend/themes/default/base.html' %}
+{% extends "frontend/themes/default/base.html" %}
 {% block title %}{{ page.title }}{% endblock %}
 {% block content %}
 <article id="post" class="post">
@@ -11,16 +11,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-        本条目发布于
-        <a href="{{ url_for('frontend.page', page_url=page.url) }}" title="{{ page.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
-            <time class="entry-date" datetime="{{ page.publish_time }}">{{ page.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
-        </a>。
-        <span class="by-author">作者是
-            <span class="author vcard">
-                <a class="url fn n" rel="author">{{ page.author.name }}</a>
-            </span>。
-        </span>
-        <span class="edit-link"><a class="post-edit-link" href="#">编辑</a></span>
+        <span class="edit-link"><a class="post-edit-link" href="#">Edit</a></span>
     </footer><!-- .entry-meta -->
 </article><!-- #post -->
 {% endblock %}
