@@ -15,11 +15,12 @@ class User(db.Document):
 
 
 class Diary(db.Document):
+    permalink = db.StringField(required=True, unique=True)
     title = db.StringField(required=True)
     content = db.StringField()
     summary = db.StringField()
     html = db.StringField()
-    category = db.StringField(default=u'未分类')
+    category = db.StringField(default='uncategorized')
     author = db.ReferenceField(User)
     tags = db.SortedListField(db.StringField())
     comments = db.SortedListField(db.EmbeddedDocumentField('CommentEm'))
@@ -27,7 +28,7 @@ class Diary(db.Document):
     update_time = db.DateTimeField(default=datetime.now, required=True)
 
     meta = {
-        'indexes': ['pk', ('pk', '-publish_time'), 'category'],
+        'indexes': ['permalink', 'category'],
         'ordering': ['-publish_time'],
         'allow_inheritance': True
     }
@@ -36,7 +37,7 @@ class Diary(db.Document):
 class Photo(db.Document):
     url = db.StringField(required=True)
     title = db.StringField(required=True)
-    album_name = db.StringField(default=u'未分类')
+    album_name = db.StringField(default='uncategorized')
     description = db.StringField()
     publish_time = db.DateTimeField(default=datetime.now, required=True)
 

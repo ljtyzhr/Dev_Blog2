@@ -15,7 +15,7 @@
 
         <footer class="entry-meta">
             This entry was posted in
-            <a href="#" title="View all posts in {{ diary.category }}" rel="category tag">{{ diary.category }}</a>
+            <a href="{{ url_for('frontend.diary_list', cat_name=diary.category) }}" title="View all posts in {{ diary.category }}" rel="category tag">{{ diary.category }}</a>
             On
             <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
                 <time class="entry-date" datetime="{{ diary.publish_time }}">{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
