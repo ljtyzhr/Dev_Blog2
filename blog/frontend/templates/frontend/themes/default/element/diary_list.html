@@ -19,7 +19,7 @@
           <time class="entry-date" datetime="{{ d.publish_time }}">{{ d.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
       </a>。
       属于
-      <a href="{{ url_for('frontend.category_list', category_name=d.category) }}" title="查看{{ d.category }}中的全部文章" rel="category tag">{{ d.category }}</a>分类。
+      <a href="{{ url_for('frontend.diary_list', cat_name=d.category) }}" title="查看{{ d.category }}中的全部文章" rel="category tag">{{ d.category }}</a>分类。
       <span class="by-author">作者是
           <span class="author vcard">
               <a class="url fn n" rel="author">{{ d.author.name }}</a>

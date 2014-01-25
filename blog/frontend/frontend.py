@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import json
-from operator import attrgetter
 from flask import (Blueprint, render_template, redirect, request, url_for,
-                   make_response, abort, Response)
-from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
-                          Photo, StaticPage)
-from config import Config
-from tasks.email_tasks import send_email_task
+                   abort, Response)
 from functions import (user_func, diary_func, cat_func, page_func,
                        other_func)
 from templates import templates
@@ -101,10 +95,10 @@ def diary_prev_or_next(prev_or_next, diary_id):
         abort(404)
 
 
-@frontend.route('/diary/list/<int:page_num>')
+@frontend.route('/diary/page/<int:page_num>')
 @frontend.route('/category/<cat_name>')
-@frontend.route('/category/<cat_name>/list/<int:page_num>')
-@frontend.route('/tag/<tag_name>/list/<int:page_num>')
+@frontend.route('/category/<cat_name>/page/<int:page_num>')
+@frontend.route('/tag/<tag_name>/page/<int:page_num>')
 def diary_list(page_num=None, cat_name=None, tag_name=None):
     """Diary list page.
 
@@ -143,7 +137,8 @@ def diary_list(page_num=None, cat_name=None, tag_name=None):
 
     return render_template(templates['diary_list'], diaries=diaries,
                            categories=categories, next=next, prev=prev,
-                           page_num=page_num, pages=pages, profile=profile)
+                           page_num=page_num, pages=pages, profile=profile,
+                           cat_name=cat_name, tag_name=tag_name)
 
 
 @frontend.route('/feed')
@@ -186,162 +181,3 @@ def page(page_url):
 
     return render_template(templates['page'], page=page,
                            categories=categories, pages=pages, profile=profile)
-
-
-@frontend.route('/tag/<tag_name>')
-def tag_list(tag_name):
-    """ TagList Page.
-
-    used for list diaries with the same tag_name with 5 diaries each page.
-
-    Args:
-        tag_name: string
-
-    Return:
-        categories: used for sidebar list
-        pages: used for top-nav
-        diaries: sorted diaries_object by publish_time
-        page_num: 1
-        tag: tag_name used for title
-        profile: user object
-    """
-    tags = Tag.objects.get_or_404(name=tag_name)
-    profile = User.objects.first()
-    next_page = False
-    diary_num = len(tags.diaries)
-    if diary_num > 5:
-        next_page = True
-
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
-    diaries = sorted(Tag.objects(name=tag_name)[0].diaries,
-                     key=attrgetter('publish_time'),
-                     reverse=True)[:5]
-
-    return render_template('frontend/tag/list.html', diaries=diaries,
-                           categories=categories, tag=tag_name,
-                           next_page=next_page, page_num=1, pages=pages,
-                           profile=profile)
-
-
-@frontend.route('/tag/<tag_name>/page/<page_num>')
-def tag_paging(tag_name, page_num):
-    """ TagList Paging.
-
-    used for list diaries with the same tag_name with 5 diaries each page.
-
-    Args:
-        tag_name: string
-        page_num: page_num
-
-    Return:
-        categories: used for sidebar list
-        next_page: bool True or False
-        diaries: sorted diaries_object by publish_time with 5 each page
-        page_num: now page_num
-        tag: tag_name used for title
-        pages: used for top-nav
-        profile: user object
-    """
-    next_page = False
-    diary_num = len(Tag.objects(name=tag_name)[0].diaries)
-    if diary_num > int(page_num) * 5:
-        next_page = True
-
-    profile = User.objects.first()
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
-    diaries = sorted(Tag.objects(name=tag_name)[0].diaries,
-                     key=attrgetter('publish_time'),
-                     reverse=True)[(int(page_num) - 1) * 5:int(page_num) * 5]
-
-    return render_template('frontend/tag/list.html', diaries=diaries,
-                           categories=categories, tag=tag_name,
-                           next_page=next_page, page_num=page_num, pages=pages,
-                           profile=profile)
-
-
-@frontend.route('/comment/add', methods=['POST'])
-def comment_add():
-    """ Comment Add AJAX Post Action.
-
-    designed for ajax post and send reply email for admin
-
-    Args:
-        username: guest_name
-        did: diary ObjectedId
-        email: guest_email
-        content: comment content
-
-    Return:
-        email_status: success
-    """
-    if request.method == 'POST':
-        name = request.form['username']
-        did = request.form['did']
-        email = request.form['email']
-        content = request.form['comment']
-
-        post = Diary.objects(pk=did)
-        diary_title = post[0].title
-
-        commentEm = CommentEm(
-            author=name,
-            content=content,
-            email=email
-        )
-        post.update_one(push__comments=commentEm)
-
-        comment = Comment(content=content)
-        comment.diary = post[0]
-        comment.email = email
-        comment.author = name
-        comment.save(validate=False)
-
-        try:
-            send_email_task(Config.EMAIL,
-                            Config.MAIN_TITLE + u'收到了新的评论, 请查收',
-                            content, did, name, diary_title)
-
-            response = make_response(json.dumps({'success': 'true'}))
-            response.set_cookie('guest_name', name)
-            response.set_cookie('guest_email', email)
-            return response
-        except Exception as e:
-            return str(e)
-
-
-@frontend.route('/gallery', methods=['GET', 'POST'])
-def gallery():
-    """GalleryPage.
-     list all photo.
-
-     Methods:
-        GET and POST
-
-    Args:
-        GET:
-            none
-        POST:
-            offset
-
-    Return:
-        photos : 5 photos
-        categories: used for sidebar
-        profile: user object
-        pages: used for top-nav
-    """
-    if request.method == 'POST':
-        offset = int(request.form["offset"])
-        photos = Photo.objects.order_by('-publish_time')[offset: offset + 5]
-
-        return photos.to_json()
-    else:
-        photos = Photo.objects.order_by('-publish_time')[0: 5]
-        categories = Category.objects.order_by('-publish_time')
-        profile = User.objects.first()
-        pages = StaticPage.objects.all()
-
-        return render_template('frontend/gallery/index.html', photos=photos,
-                               categories=categories, profile=profile,
-                               pages=pages)
