@@ -8,7 +8,7 @@ from model.models import (User, Diary, Category, CommentEm, Comment, Tag,
                           Photo, StaticPage)
 from config import Config
 from tasks.email_tasks import send_email_task
-from functions import (user_func, diary_func, cate_func, page_func,
+from functions import (user_func, diary_func, cat_func, page_func,
                        other_func)
 from templates import templates
 
@@ -33,7 +33,7 @@ def home():
         next_page: boolen
     """
     profile = user_func.get_profile()
-    categories = cate_func.get_all_categories('-publish_time')
+    categories = cat_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
     prev, next, diaries = diary_func.get_diary_list(0, 10)
 
@@ -64,7 +64,7 @@ def diary_detail(diary_id, diary_title=None):
     """
     profile = user_func.get_profile()
     prev, next, diary = diary_func.get_diary_width_navi(diary_id=diary_id)
-    categories = cate_func.get_all_categories('-publish_time')
+    categories = cat_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
 
     guest_name = request.cookies.get('guest_name')
@@ -101,31 +101,45 @@ def diary_prev_or_next(prev_or_next, diary_id):
         abort(404)
 
 
-@frontend.route('/diary/list/<page_num>')
-def diary_list(page_num):
+@frontend.route('/diary/list/<int:page_num>')
+@frontend.route('/category/<cat_name>')
+@frontend.route('/category/<cat_name>/list/<int:page_num>')
+@frontend.route('/tag/<tag_name>/list/<int:page_num>')
+def diary_list(page_num=None, cat_name=None, tag_name=None):
     """Diary list page.
 
-    listed 10 diaries each page.
+    listed 10 diaries each page.Adjusted for diary, category and tag pagging.
 
     Args:
         page_num: numberic and int
+        cate_name: string, can be none
+        tag_name: string, can be none
 
     Return:
         diaries: listed 10 diaries objects
-        next_page: bool True or False
+        next: bool True or False
+        prev: bool True or False
         categories: used for sidebar
         pages: used for top-nav
         page_num: current page_num
         profile: user object
     """
     profile = user_func.get_profile()
-    categories = cate_func.get_all_categories('-publish_time')
+    categories = cat_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
+
+    if not page_num:
+        page_num = 1
 
     start = (int(page_num) - 1) * 10
     end = int(page_num) * 10
 
-    prev, next, diaries = diary_func.get_diary_list(start, end)
+    if tag_name:
+        pass
+    elif cat_name:
+        prev, next, diaries = cat_func.get_diary_list(cat_name, start, end)
+    else:
+        prev, next, diaries = diary_func.get_diary_list(start, end)
 
     return render_template(templates['diary_list'], diaries=diaries,
                            categories=categories, next=next, prev=prev,
@@ -166,83 +180,12 @@ def page(page_url):
         profile: user object
     """
     profile = user_func.get_profile()
-    categories = cate_func.get_all_categories('-publish_time')
+    categories = cat_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
     page = page_func.get_page(page_url=page_url)
 
     return render_template(templates['page'], page=page,
                            categories=categories, pages=pages, profile=profile)
-
-
-@frontend.route('/category/<category_name>')
-def category_list(category_name):
-    """Category list page.
-
-    show 10 diaries in this page.
-
-    Args:
-        category_name: string category_name
-
-    Return:
-        next: bool True or False
-        prev: bool True or False
-        page_num: 1
-        category: category_name used for title
-        diaries: listed 10 diaries in each page
-        categories: used in sidebar
-        pages: used for top-nav
-        profile: user object
-    """
-    profile = user_func.get_profile()
-    categories = cate_func.get_all_categories()
-    pages = page_func.get_all_pages()
-    prev, next, diaries = cate_func.get_category_detail(category_name)
-
-    return render_template(templates['cate_list'],
-                           category=category_name, diaries=diaries,
-                           categories=categories, next=next,
-                           page_num=1, pages=pages,
-                           profile=profile)
-
-
-@frontend.route('/category/<category_id>/<category_name>/page/<page_num>')
-def category_paging(category_id, page_num, category_name=None):
-    """Category list page.
-
-    show 5 diaries in each page.
-
-    Args:
-        category_id: categoryObjectID
-        category_name: only for SEO
-        page_num: page_num
-
-    Return:
-        next_page: bool True or False
-        page_num: now page_num
-        category: category_name used for title
-        diaries: listed 5 diaries in each page
-        categories: used in sidebar
-        pages: used for top-nav
-        profile: user object
-    """
-    next_page = False
-    diary_num = len(Category.objects(pk=category_id)[0].diaries)
-
-    if diary_num > (int(page_num) - 1) * 5 + 5:
-        next_page = True
-
-    profile = User.objects.first()
-    categories = Category.objects.order_by('-publish_time')
-    pages = StaticPage.objects.all()
-    diaries = sorted(Category.objects(pk=category_id)[0].diaries,
-                     key=attrgetter('publish_time'),
-                     reverse=True)[(int(page_num) - 1) * 5:int(page_num) * 5]
-
-    return render_template('frontend/category/list.html',
-                           category=category_name, diaries=diaries,
-                           categories=categories, next_page=next_page,
-                           page_num=page_num, category_id=category_id,
-                           pages=pages, profile=profile)
 
 
 @frontend.route('/tag/<tag_name>')

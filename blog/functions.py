@@ -122,8 +122,7 @@ class CategoryFunctions(object):
     def get_all_categories(self, order='-publish_time'):
         return Category.objects.order_by(order)
 
-    def get_category_detail(self, cat_name,
-                            start=0, end=10, order='-publish_time'):
+    def get_diary_list(self, cat_name, start=0, end=10, order='-publish_time'):
         """Category Diary list.
         default query 10 diaries and return if there should be next or prev
         page.
@@ -198,6 +197,6 @@ class OtherFunctions(object):
 # init functions
 user_func = UserFunctions()
 diary_func = DiaryFunctions()
-cate_func = CategoryFunctions()
+cat_func = CategoryFunctions()
 page_func = PageFunctions()
 other_func = OtherFunctions()
