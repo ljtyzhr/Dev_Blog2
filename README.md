@@ -29,25 +29,25 @@ To get started using Dev_Blog2, clone or fork the master branch or download the 
 
 Install independences:
 
-  sudo apt-get install python-pip mongodb gcc openjdk-6-jre-headless lessc 
+    sudo apt-get install python-pip mongodb gcc openjdk-6-jre-headless lessc 
 
-  cd ~/dev_blog2/
+    cd ~/dev_blog2/
 
-  sudo pip install -r requirements.txt
+    sudo pip install -r requirements.txt
 
 Init website config:
 
-  cp blog/config.py.sample  blog/config.py
+    cp blog/config.py.sample  blog/config.py
 
-  *** change the config with your own config***
+    *** change the config with your own config***
 
-  fab build 
+    fab build 
   
-  *** It will generate a default admin account for you (username/password: admin) ***
+    *** It will generate a default admin account for you (username/password: admin) ***
 
 Start the website:
 
-  fab test
+    fab test
 
 Much more detail about ***deploy*** in product environment please see ***Docs*** section — ***Build your site***
 
