@@ -30,7 +30,7 @@ def build():
     user.password = generate_password_hash(password='admin')
     user.save()
     print "Default Admin add Success!"
-    execute(deploy)
+    #execute(deploy)
 
 
 @task
