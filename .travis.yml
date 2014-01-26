@@ -4,6 +4,6 @@ python:
 install: pip install -r requirements.txt
 script:  
   - cp blog/config.py.sample blog/config.py
-  - fab test
+  - fab build
 services:
   - mongodb
