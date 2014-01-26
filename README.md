@@ -5,6 +5,7 @@ Python Blog System. Powered by Tornado and MongoDB.
 [Dev_Blog2](http://scenk.github.io/Dev_Blog2/)
 
 [![Build Status](https://travis-ci.org/ScenK/Dev_Blog2.png?branch=develop)](https://travis-ci.org/ScenK/Dev_Blog2)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ScenK/dev_blog2/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 Features
 --------
