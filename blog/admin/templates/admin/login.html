@@ -1,47 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>登陆 - {{ config['MAIN_TITLE'] }}</title>
-  <meta name="description" content="">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/login.css') }}" type="text/css" media="screen"  />
-
-  <script type="text/javascript" src="{{ url_for('admin.static', filename='lib/jquery-1.7.1.min.js') }}"></script>
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
+    <meta charset="UTF-8">
+    <title>Login Page - {{ config['MAIN_TITLE'] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='lib/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="screen"  />
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/login.css') }}" type="text/css" media="screen"  />
 </head>
 <body>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class=flashes>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-  {% endwith %}
-  {% if error %}
-  <div class="alerts">
-    <div class="alert red hideit"><p><span class="red-icon"></span>错误: {{ error }}</p></div>
-  </div>
-  {% endif %}
-  <section id="form">
-    <form id="form-login" action=""  class="formular" method="post">
-      <div id="content-header">
-        <p id="logo">Admin Panel Login</p>
-        <p>To log into the admin panel, type your password and log.</a></p>
-      </div>
-      <div id="content">
-        <input type="text" name="username" id="req" class="validate[required] text-input" placeholder="Username"><br><br>
-        <input type="password" name="password" id="pass" class="validate[required] text-input" placeholder="Password"><br><br>
-        <div class="buttons">
-          <input type="submit" class="button-a gray" value="Forgot your password?">
-          <input type="submit"  name="go"  class="button-a purle" value="LOG IN">
+ 
+    <div class="container">
+        <div class="text-center">
+            <img src="{{ url_for('admin.static', filename='img/logo.png') }}" alt="Metis Logo">
         </div>
-      </div>
-    </form>
-  </section>
+        <div class="tab-content">
+            <div id="login" class="tab-pane active">
+                <form action="index.html" class="form-signin">
+                    <p class="text-muted text-center">
+                        Enter your username and password
+                    </p>
+                    <input type="text" placeholder="Username" class="form-control">
+                    <input type="password" placeholder="Password" class="form-control">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                </form>
+            </div>
+        </div>
+        
+    </div> <!-- /container -->
+    
+    <script type="text/javascript" src="{{ url_for('admin.static', filename='lib/jquery-2.0.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('admin.static', filename='lib/bootstrap/js/bootstrap.min.js') }}"></script>
+
 </body>
 </html>
