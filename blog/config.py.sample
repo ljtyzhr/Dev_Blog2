@@ -57,3 +57,6 @@ class UpyunConfig(Config):
     BUCKET = ''
     ADMIN = ''
     PASSWORD = ''
+    
+class ThemeConfig(Config):
+    NAME = 'default'
