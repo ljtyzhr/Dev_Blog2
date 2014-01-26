@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %} - {{ config['MAIN_TITLE'] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    {% if config['DEBUG'] == True %}
+      <link rel=stylesheet type=text/css href="{{ url_for('admin.static', filename='css/admin.css') }}">
+    {% else %}
+      <link rel=stylesheet type=text/css href="{{ config['ADMIN_MIN_CSS'] }}">
+    {% endif %}
+  </head>
+  <body>
+    <div id="wrap">
+
+      {% include "admin/element/top_nav.html" %}
+
+      {% include "admin/element/sidebar.html" %}
+
+      <div id="content">
+        {% block content %}
+        {% endblock %}
+      </div><!-- end #content -->
+      
+    </div><!-- /#wrap -->
+
+    <div id="footer"><p>2013 &copy; Metis Admin</p></div>
+
+    {% if config['DEBUG'] == True %}
+    <script type="text/javascript" src="{{ url_for('admin.static', filename='js/backend.js') }}"></script>
+    {% else %}
+    <script type="text/javascript" src="{{ config['ADMIN_MIN_JS'] }}"></script>
+    {{ config['ANALYTICS']|safe }}
+    {% endif %}
+    <script>
+    {% block script %}{% endblock %}
+    </script>
+  </body>
+</html>

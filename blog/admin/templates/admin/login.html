@@ -15,17 +15,17 @@
         </div>
         <div class="tab-content">
             <div id="login" class="tab-pane active">
-                <form action="index.html" class="form-signin">
+                <form action="" class="form-signin" method="post">
                     <p class="text-muted text-center">
                         Enter your username and password
                     </p>
-                    <input type="text" placeholder="Username" class="form-control">
-                    <input type="password" placeholder="Password" class="form-control">
+                    <input type="text" name="username" placeholder="Username" class="form-control">
+                    <input type="password" name="password" placeholder="Password" class="form-control">
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
                 </form>
             </div>
         </div>
-        
+
     </div> <!-- /container -->
     
     <script type="text/javascript" src="{{ url_for('admin.static', filename='lib/jquery-2.0.3.min.js') }}"></script>
