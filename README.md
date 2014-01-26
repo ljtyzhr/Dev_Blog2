@@ -4,6 +4,8 @@ Dev_Blog2
 Python Blog System. Powered by Tornado and MongoDB.
 [Dev_Blog2](http://scenk.github.io/Dev_Blog2/)
 
+[![Build Status](https://travis-ci.org/ScenK/Dev_Blog2.png?branch=develop)](https://travis-ci.org/ScenK/Dev_Blog2)
+
 Features
 --------
 
