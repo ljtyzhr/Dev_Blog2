@@ -93,4 +93,27 @@ def index():
     only display static page.
     """
 
-    return render_template(templates["dashboard"])
+    profile = user_func.get_profile()
+    return render_template(templates["dashboard"], profile=profile)
+
+
+@admin.route('/diary/list')
+@login_required
+def diary_list():
+    """Admin Diary lit page.
+
+    show all diaries.
+
+    Methods:
+        GET
+
+    Args:
+        none
+
+    Returns:
+        Diary object
+    """
+    profile = user_func.get_profile()
+    diaries = diary_func.get_all_diaries() 
+    return render_template(templates["diary_list"], diaries=diaries,
+                           profile=profile)

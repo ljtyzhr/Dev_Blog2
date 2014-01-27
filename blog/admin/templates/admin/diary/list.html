@@ -1,0 +1,52 @@
+{% extends 'admin/base.html' %}
+{% block title %}Diary List{% endblock %}
+{% block content %}
+<div class="outer">
+  <div class="inner">
+    <!--Begin Datatables-->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="box">
+          <header>
+            <div class="icons"></div>
+            <h5>Posts</h5>
+          </header>
+          <div id="collapse4" class="body">
+            <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Categories</th>
+                  <th>Tags</th>
+                  <th>Comments</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in diaries %}
+                <tr>
+                  <td>{{ i.title }}</td>
+                  <td>{{ i.author.name }}</td>
+                  <td>{{ i.category }}</td>
+                  <td>{% for t in i.tags %}{{ t }} {% endfor %}</td>
+                  <td>{{ i.comments|count }}</td>
+                  <td>{{ i.publish_time.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.row -->
+    <!--End Datatables-->
+
+  </div><!-- end .inner -->
+</div><!-- end .outer -->
+{% endblock %}
+{% block script %}
+  <script>
+    $(function () { metisTable(); });
+  </script>
+{% endblock %}
