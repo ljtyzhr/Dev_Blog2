@@ -2,43 +2,35 @@
   <div class="media user-media">
     <a class="user-link" href="">
       <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{ profile.avatar }}">
-    </a>
-
-    <div class="media-body">
-      <h5 class="media-heading">Archie</h5>
-      <ul class="list-unstyled user-info">
-        <li><a href="">Administrator</a></li>
-        <li>Site Start : <br>
-          <small><i class="icon-calendar"></i>  {{ profile.created_at.strftime('%Y-%m-%d') }}</small>
-        </li>
-      </ul>
-    </div>
+    </a> 
   </div>
 
   <!-- #menu -->
   <ul id="menu" class="collapse">
     <li class="nav-header">Menu</li>
     <li class="nav-divider"></li>
-    <li class="panel active">
-      <a href="#" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#dashboard-nav">
-        <i class="icon-dashboard"></i> Dashboard 
-      </a>
+    <li class="">
+      <a href="{{ url_for('admin.index') }}">
+        <i class="fa fa-dashboard"></i>
+        <span class="link-title">Dashboard</span> 
+        <span class="fa arrow"></span> 
+      </a> 
     </li>
-    <li class="nav-divider"></li>
-    <li class="panel ">
-      <a href="#" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#posts-nav">
-        <i class="icon-pencil"></i> Posts 
-        <span class="pull-right">
-          <i class="icon-angle-left"></i>
-        </span>
-      </a>
-      <ul class="collapse" id="posts-nav">
-        <li class=""><a href="{{ url_for('admin.diary_list') }}"><i class="icon-angle-right"></i> All Posts</a></li>
-        <li class=""><a href=""><i class="icon-angle-right"></i> Add New</a></li>
+    <li class="">
+      <a href="javascript:;">
+        <i class="fa fa-tasks"></i>&nbsp;Posts
+        <span class="fa arrow"></span> 
+      </a> 
+      <ul class="collapse">
+        <li class="">
+          <a href="{{ url_for('admin.diary_list') }}">
+            <i class="fa fa-credit-card"></i>&nbsp;All Posts</a> 
+        </li>
+        <li class="">
+          <a href="">
+            <i class="fa fa-angle-right"></i>&nbsp;Add New</a> 
+        </li>
       </ul>
     </li>
-    <li><a href="{{ url_for('admin.logout') }}"><i class="icon-signin"></i> Login Page</a></li>
-  </ul>
-  <!-- /#menu -->
+  </ul><!-- /#menu -->
 </div>
-<!-- /#left -->

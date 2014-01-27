@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %} - {{ config['MAIN_TITLE'] }}</title>
+    <!--Mobile first-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     {% if config['DEBUG'] == True %}
       <link rel=stylesheet type=text/css href="{{ url_for('admin.static', filename='css/admin.css') }}">
@@ -10,7 +12,7 @@
       <link rel=stylesheet type=text/css href="{{ config['ADMIN_MIN_CSS'] }}">
     {% endif %}
   </head>
-  <body>
+  <body class="mini-sidebar">
     <div id="wrap">
 
       {% include "admin/element/top_nav.html" %}
