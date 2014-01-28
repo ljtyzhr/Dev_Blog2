@@ -101,3 +101,26 @@ function metisTable() {
     });
     /*----------- END datatable CODE -------------------------*/
 }
+
+function formWysiwyg() {
+    "use strict";
+
+    /*----------- BEGIN Markdown.Editor CODE -------------------------*/
+    var converter = Markdown.getSanitizingConverter();
+    var editor = new Markdown.Editor(converter);
+    editor.run();
+    /*----------- END Markdown.Editor CODE -------------------------*/
+
+    /*----------- BEGIN autosize CODE -------------------------*/
+    $('.autosize').autosize();
+    /*----------- END autosize CODE -------------------------*/
+
+}
+
+function formGeneral() {
+    "use strict";
+    
+    /*----------- BEGIN tagsInput CODE -------------------------*/
+    $('#tags').tagsInput();
+    /*----------- END tagsInput CODE -------------------------*/
+}

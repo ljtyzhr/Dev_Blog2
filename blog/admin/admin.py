@@ -117,3 +117,37 @@ def diary_list():
     diaries = diary_func.get_all_diaries() 
     return render_template(templates["diary_list"], diaries=diaries,
                            profile=profile)
+
+
+@admin.route('/diary/edit/<diary_id>', methods=['GET', 'POST'])
+@login_required
+def diary_edit(diary_id=None):
+    """ Edit diary from admin
+
+    receives title, content(html), tags and cagetory
+    save title, content(html), pure content(further use), tags and cagetory
+    also auto save author as current_user.
+
+    this method will auto save new Category or Tag if not exist otherwise save
+    in existed none with push only diary_object
+
+    Args:
+        diary_id: diary_id
+        title: string
+        html: string
+        cagetory: string
+        tags: list
+
+    Save:
+        title: string
+        html: string
+        content: string without html tags
+        category: string
+        tags: list
+        summary: first 80 characters in content with 3 dots in the end
+        author: current_user_object
+    """
+    profile = user_func.get_profile()
+    categories = cat_func.get_all_categories()
+    return render_template(templates["diary_edit"], profile=profile,
+                           categories=categories)

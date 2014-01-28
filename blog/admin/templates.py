@@ -3,5 +3,6 @@
 templates = dict(
     login="admin/login.html",
     dashboard="admin/dashboard.html",
-    diary_list="admin/diary/list.html"
+    diary_list="admin/diary/list.html",
+    diary_edit="admin/diary/edit.html",
 )
