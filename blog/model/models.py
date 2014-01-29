@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from flask.ext.mongoengine import MongoEngine
+from mongoengine.errors import ValidationError
 
 db = MongoEngine()
 
@@ -14,24 +15,52 @@ class User(db.Document):
     created_at = db.DateTimeField(default=datetime.now, required=True)
 
 
-class Diary(db.Document):
+class Category(db.Document):
+    name = db.StringField(max_length=120, required=True, unique=True)
+    publish_time = db.DateTimeField(default=datetime.now, required=True)
+
+    meta = {
+        'indexes': ['name'],
+        'ordering': ['-publish_time']
+    }
+
+
+class Post(db.Document):
     permalink = db.StringField(required=True, unique=True)
     title = db.StringField(required=True)
     content = db.StringField()
     summary = db.StringField()
     html = db.StringField()
-    category = db.StringField(default='uncategorized')
+    status = db.StringField(choices=('Published', 'Draft'), required=True)
     author = db.ReferenceField(User)
-    tags = db.SortedListField(db.StringField())
     comments = db.SortedListField(db.EmbeddedDocumentField('CommentEm'))
     publish_time = db.DateTimeField(default=datetime.now, required=True)
     update_time = db.DateTimeField(default=datetime.now, required=True)
 
+    def clean(self):
+        """Ensures that only published essays have a `pub_date` and
+        automatically sets the pub_date if published and not set"""
+        if self.status == 'Draft' and self.pub_date is not None:
+            msg = 'Draft entries should not have a publication date.'
+            raise ValidationError(msg)
+        # Set the pub_date for published items if not set.
+        if self.status == 'Published' and self.pub_date is None:
+            self.pub_date = datetime.now()
+
     meta = {
-        'indexes': ['permalink', 'category'],
+        'indexes': ['permalink'],
         'ordering': ['-publish_time'],
         'allow_inheritance': True
     }
+
+
+class Diary(Post):
+    category = db.SortedListField(db.ReferenceField(Category))
+    tags = db.SortedListField(db.StringField())
+
+
+class Page(Post):
+    pass
 
 
 class Photo(db.Document):
@@ -48,40 +77,12 @@ class Tag(db.Document):
     publish_time = db.DateTimeField(default=datetime.now, required=True)
 
 
-class Category(db.Document):
-    name = db.StringField(max_length=120, required=True)
-    diaries = db.SortedListField(db.ReferenceField(Diary))
-    publish_time = db.DateTimeField(default=datetime.now, required=True)
-
-
 class Comment(db.Document):
     content = db.StringField(required=True)
     author = db.StringField(max_length=120, required=True)
     email = db.EmailField()
     diary = db.ReferenceField(Diary)
     publish_time = db.DateTimeField(default=datetime.now, required=True)
-
-
-class Page(db.Document):
-    url = db.StringField(required=True, unique=True)
-    title = db.StringField(required=True)
-    content = db.StringField()
-    summary = db.StringField()
-    html = db.StringField()
-    author = db.ReferenceField(User)
-    comments = db.SortedListField(db.EmbeddedDocumentField('CommentEm'))
-    publish_time = db.DateTimeField(default=datetime.now, required=True)
-    update_time = db.DateTimeField(default=datetime.now, required=True)
-
-    meta = {
-        'indexes': ['pk', ('url', '-publish_time'), 'title'],
-        'ordering': ['-publish_time'],
-        'allow_inheritance': True
-    }
-
-
-class StaticPage(Page):
-    pass
 
 
 class CommentEm(db.EmbeddedDocument):

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import datetime
 import PyRSS2Gen
+from werkzeug.security import generate_password_hash
+from mongoengine.errors import NotUniqueError
 
 from config import Config
-from model.models import User, Diary, Category, StaticPage
+from model.models import User, Diary, Category, Page
 
 
 class UserFunctions(object):
@@ -11,12 +13,24 @@ class UserFunctions(object):
     Return author profile
     """
     def get_profile(self):
+        """Return User object."""
         return User.objects.first()
+
+    def generate_user(self, username, password):
+        """Generate User"""
+        user = User(name=username)
+        user.password = generate_password_hash(password=password)
+        return user.save()
+
+    def delete_user(self):
+        """Delete User"""
+        return User.objects().first().delete()
 
 
 class DiaryFunctions(object):
 
     def get_all_diaries(self, order='-publish_time'):
+        """Return Total diaries objects."""
         return Diary.objects.order_by(order)
 
     def get_diary(self, diary_id):
@@ -53,16 +67,20 @@ class DiaryFunctions(object):
         return prev, next, diary
 
     def get_first_diary(self):
+        """Return First Diary object."""
         return Diary.objects.order_by('-publish_time').first()
 
     def get_last_diary(self):
+        """Return Last Diary object."""
         return Diary.objects.order_by('publish_time').first()
 
     def get_prev_diary(self, pub_time):
+        """Return Previous Diary object."""
         return Diary.objects(publish_time__lt=pub_time
                              ).order_by('-publish_time').first()
 
     def get_next_diary(self, pub_time):
+        """Return Next Diary object."""
         return Diary.objects(publish_time__gt=pub_time
                              ).order_by('-publish_time').first()
 
@@ -87,6 +105,7 @@ class DiaryFunctions(object):
         return next_diary
 
     def get_diary_count(self):
+        """Return Diaries total number."""
         return Diary.objects.count()
 
     def get_diary_list(self, start=0, end=10, order='-publish_time'):
@@ -106,7 +125,7 @@ class DiaryFunctions(object):
         """
         size = end - start
         prev = next = False
-        diaries = Diary.objects.order_by(order)[start:end+1]
+        diaries = Diary.objects.order_by(order)[start:end + 1]
         if len(diaries) - size > 0:
             next = True
         if start != 0:
@@ -120,6 +139,7 @@ class CategoryFunctions(object):
     Return category objects
     """
     def get_all_categories(self, order='-publish_time'):
+        """Return Total Categories objects."""
         return Category.objects.order_by(order)
 
     def get_diary_list(self, cat_name, start=0, end=10, order='-publish_time'):
@@ -139,7 +159,8 @@ class CategoryFunctions(object):
         """
         size = end - start
         prev = next = False
-        diaries = Diary.objects(category=cat_name).order_by(order)[start:end+1]
+        diaries = Diary.objects(category=cat_name).order_by(order)[start:
+                                                                   end + 1]
         if len(diaries) - size > 0:
             next = True
         if start != 0:
@@ -147,16 +168,47 @@ class CategoryFunctions(object):
 
         return prev, next, diaries[start:end]
 
+    def get_category_count(self):
+        """Return Categories total number."""
+        return Category.objects.count()
+
+    def add_new_category(self, cat_name):
+        """Category add new.
+        Will check if the cat_name is unique, otherwise will return an error.
+
+        Args:
+            cat_name: string category name.
+
+        Return:
+            None
+        """
+        try:
+            return Category(name=cat_name).save()
+        except NotUniqueError:
+            return 'category name not unique'
+
+    def get_category_detail(self, cat_name):
+        """Category detail.
+        will return category detail by category name.
+
+        Args:
+            cat_name: string category name.
+
+        Return:
+            category: category object
+        """
+        return Category.objects(name=cat_name).first()
+
 
 class PageFunctions(object):
     """Page functions.
     Return page objects
     """
     def get_all_pages(self, order='-publish_time'):
-        return StaticPage.objects.order_by(order)
+        return Page.objects.order_by(order)
 
     def get_page(self, page_url):
-        return StaticPage.objects(url=page_url).first()
+        return Page.objects(url=page_url).first()
 
 
 class OtherFunctions(object):

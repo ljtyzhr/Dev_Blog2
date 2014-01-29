@@ -1,38 +1,73 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from mongoengine import connect
+from mongoengine.connection import get_db
 
-import runserver
+from config import Config
+from functions import user_func, cat_func
 
 
 class BlogTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.app = runserver.app.test_client()
+    @classmethod
+    def setUpClass(self):
+        connect(Config.MONGODB_SETTINGS.get('DB'))
+        self.db = get_db()
+        self.username = "test_user"
+        self.password = "test_password"
 
-    def login(self, username, password):
-        return self.app.post('/admin/login', data=dict(
-            username=username,
-            password=password
-        ), follow_redirects=True)
+    @classmethod
+    def tearDownClass(self):
+        self.db.drop_collection('user')
+        self.db.drop_collection('category')
 
-    def logout(self):
-        return self.app.get('/admin/logout', follow_redirects=True)
+    """TestCase for User functions"""
+    def test_generate_user(self):
+        user = user_func.generate_user(self.username, self.password)
 
-    def test_empty_db(self):
-        rv = self.app.get('/')
-        assert 'Powered By Tornado and MongoDB' in rv.data
+        self.assertEqual(user.name, self.username)
 
-    def test_login_logout(self):
-        rv = self.login('admin', 'admin')
-        assert 'welcome' in rv.data
-        rv = self.logout()
-        assert 'Please log in' in rv.data
-        rv = self.login('adminx', 'default')
-        assert 'type your password and log' in rv.data
-        rv = self.login('admin', 'defaultx')
-        assert 'type your password and log' in rv.data
+    def test_get_profile(self):
+        user_func.generate_user(self.username, self.password)
 
+        user = user_func.get_profile()
+
+        self.assertEqual(user.name, self.username)
+
+    def test_delete_user(self):
+        user_func.generate_user(self.username, self.password)
+
+        user = user_func.delete_user()
+
+        self.assertEqual(None, user)
+
+    """TestCase for Category functions"""
+    def test_add_new_category(self):
+        cat_name = 'test-category'
+
+        category = cat_func.add_new_category(cat_name=cat_name)
+
+        self.assertEqual(cat_name, category.name)
+
+    def test_add_new_category_with_same_name(self):
+        cat_name = 'test-category'
+
+        category = cat_func.add_new_category(cat_name=cat_name)
+
+        self.assertEqual('category name not unique', category)
+
+    def test_get_category_count(self):
+        cat_num = cat_func.get_category_count()
+
+        self.assertEqual(1, cat_num)
+
+    def test_get_category_detail(self):
+        cat_name = 'test-category'
+
+        category = cat_func.get_category_detail(cat_name=cat_name)
+
+        self.assertEqual(cat_name, category.name)
 
 if __name__ == '__main__':
     unittest.main()
