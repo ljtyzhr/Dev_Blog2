@@ -5,7 +5,8 @@ from mongoengine import connect
 from mongoengine.connection import get_db
 
 from config import Config
-from functions import user_func, cat_func
+from functions import user_func, cat_func, diary_func
+from utils.helper.helpers import site_helpers
 
 
 class BlogTestCase(unittest.TestCase):
@@ -21,6 +22,7 @@ class BlogTestCase(unittest.TestCase):
     def tearDownClass(self):
         self.db.drop_collection('user')
         self.db.drop_collection('category')
+        self.db.drop_collection('post')
 
     """TestCase for User functions"""
     def test_generate_user(self):
@@ -68,6 +70,53 @@ class BlogTestCase(unittest.TestCase):
         category = cat_func.get_category_detail(cat_name=cat_name)
 
         self.assertEqual(cat_name, category.name)
+
+    """TestCase for SiteHelper functions"""
+    def test_strip_html_tags(self):
+        html = '<p>Get this pure <span style="">please</span>.</p>'
+
+        pure_content = site_helpers.strip_html_tags(html)
+
+        self.assertEqual('Get this pure please.', pure_content)
+
+    def test_secure_filename(self):
+        name1 = 'white space'
+        name2 = '../folder'
+        name3 = '/abc/cc'
+        name4 = 'UPPER NAme'
+        name5 = u'/你/好'
+
+        self.assertEqual('white-space', site_helpers.secure_filename(name1))
+        self.assertEqual('folder', site_helpers.secure_filename(name2))
+        self.assertEqual('abc-cc', site_helpers.secure_filename(name3))
+        self.assertEqual('upper-name', site_helpers.secure_filename(name4))
+        self.assertEqual(u'你-好', site_helpers.secure_filename(name5))
+
+    """TestCase for Diary functions"""
+    def test_edit_diary(self):
+        permalink = 'New post'
+        title = 'New Post'
+        content = '[S](http://s/)'
+        categories = ['uncategoried', 'new category']
+        tags = ['tag1', 'tag2', 'tags']
+        author = user_func.get_profile()
+        status = 'Draft'
+
+        diary = diary_func.edit_diary(permalink=permalink, title=title,
+                                      content=content, categories=categories,
+                                      tags=tags, author=author, status=status)
+
+        self.assertEqual('new-post', diary.permalink)
+        self.assertEqual(title, diary.title)
+        self.assertEqual(content, diary.content)
+        self.assertEqual(categories, diary.categories)
+        self.assertEqual(tags, diary.tags)
+        self.assertEqual(status, diary.status)
+        self.assertEqual(None, diary.publish_time)
+        self.assertEqual('<p><a href="http://s/">S</a></p>', diary.html)
+        self.assertEqual('S', diary.pure_content)
+        self.assertEqual(author, diary.author)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -29,23 +29,24 @@ class Post(db.Document):
     permalink = db.StringField(required=True, unique=True)
     title = db.StringField(required=True)
     content = db.StringField()
+    pure_content = db.StringField()
     summary = db.StringField()
     html = db.StringField()
     status = db.StringField(choices=('Published', 'Draft'), required=True)
     author = db.ReferenceField(User)
     comments = db.SortedListField(db.EmbeddedDocumentField('CommentEm'))
-    publish_time = db.DateTimeField(default=datetime.now, required=True)
     update_time = db.DateTimeField(default=datetime.now, required=True)
+    publish_time = db.DateTimeField()
 
     def clean(self):
         """Ensures that only published essays have a `pub_date` and
         automatically sets the pub_date if published and not set"""
-        if self.status == 'Draft' and self.pub_date is not None:
+        if self.status == 'Draft' and self.publish_time is not None:
             msg = 'Draft entries should not have a publication date.'
             raise ValidationError(msg)
         # Set the pub_date for published items if not set.
-        if self.status == 'Published' and self.pub_date is None:
-            self.pub_date = datetime.now()
+        if self.status == 'Published' and self.publish_time is None:
+            self.publish_time = datetime.now()
 
     meta = {
         'indexes': ['permalink'],
@@ -55,7 +56,7 @@ class Post(db.Document):
 
 
 class Diary(Post):
-    category = db.SortedListField(db.ReferenceField(Category))
+    categories = db.SortedListField(db.StringField())
     tags = db.SortedListField(db.StringField())
 
 

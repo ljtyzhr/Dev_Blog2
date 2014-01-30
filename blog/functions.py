@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import datetime
 import PyRSS2Gen
+import markdown
 from werkzeug.security import generate_password_hash
 from mongoengine.errors import NotUniqueError
 
 from config import Config
 from model.models import User, Diary, Category, Page
+from utils.helper.helpers import site_helpers
 
 
 class UserFunctions(object):
@@ -28,6 +30,9 @@ class UserFunctions(object):
 
 
 class DiaryFunctions(object):
+    """ Diary functions.
+    Return diary collection objects.
+    """
 
     def get_all_diaries(self, order='-publish_time'):
         """Return Total diaries objects."""
@@ -132,6 +137,59 @@ class DiaryFunctions(object):
             prev = True
 
         return prev, next, diaries[start:end]
+
+    def edit_diary(self, permalink, title, content, categories, tags,
+                   author, status='Published'):
+        """ Edit diary from admin
+
+        receives title, content(markdown), tags and cagetory
+        save title, content(markdown), pure content(further use), tags and
+        cagetories, also auto save author as current_user.
+
+        Args:
+            permalink: string
+            title: string
+            content: markdown string
+            cagetories: list
+            tags: list
+            author: author profile object
+            status: 'Published/Draft', default => 'Published'
+
+        Save:
+            permalink: string
+            title: string
+            html: string
+            content: markdown string
+            pure_content: pure content
+            categories: list
+            tags: list
+            status: 'Published/Draft', default => 'Published'
+            summary: first 80 characters in pure_content with 3 dots end
+            author: current_user_object
+        """
+        permalink = site_helpers.secure_filename(permalink)
+
+        try:
+            diary = Diary(permalink=permalink)
+        except NotUniqueError:
+            diary = Diary.objects(permalink=permalink).first()
+
+        html = markdown.markdown(content)
+
+        pure_content = site_helpers.strip_html_tags(html)
+
+        diary.title = title
+        diary.content = content
+        diary.html = html
+        diary.summary = pure_content[0:80] + '...'
+        diary.pure_content = pure_content
+        diary.author = user_func.get_profile()
+        diary.categories = categories
+        diary.tags = tags
+        diary.author = author
+        diary.status = status
+
+        return diary.save()
 
 
 class CategoryFunctions(object):
