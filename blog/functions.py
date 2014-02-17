@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import datetime
 import PyRSS2Gen
 import markdown
@@ -270,6 +271,23 @@ class PageFunctions(object):
 
 
 class OtherFunctions(object):
+
+    def up_img_to_upyun(self, collection, data, filename):
+        """Up image to upyun collecton.
+        Will get back upyun link.
+
+        Args:
+            collection: string, collection name
+            data: image data
+            filename: filename
+
+        Return:
+            success: boolean, True/False
+            url: url_link
+        """
+        success, url = site_helpers.up_to_upyun(collection, data, filename)
+
+        return success, url
 
     def get_rss(self, size):
         """ RSS2 Support.
