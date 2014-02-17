@@ -5,7 +5,7 @@ from mongoengine import connect
 from mongoengine.connection import get_db
 
 from config import Config
-from functions import user_func, cat_func, diary_func, other_func
+from functions import user_func, cat_func, diary_func
 from utils.helper.helpers import site_helpers
 
 
@@ -117,13 +117,6 @@ class BlogTestCase(unittest.TestCase):
         self.assertEqual('S', diary.pure_content)
         self.assertEqual(author, diary.author)
 
-    """TestCase for Other functions"""
-    def test_up_img_to_upyun(self):
-        collection = 'test_collection'
-        data = ''
-        filename = 'test.jpg'
-
-        success, url = other_func.up_img_to_upyun(collection, data, filename)
 
 if __name__ == '__main__':
     unittest.main()
