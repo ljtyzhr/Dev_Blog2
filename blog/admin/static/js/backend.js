@@ -11,4 +11,5 @@ document.write(unescape("%3Cscript src='/admin/static/lib/tagsinput/jquery.tagsi
 
 
 document.write(unescape("%3Cscript src='/admin/static/js/backend/main.js' type='text/javascript'%3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='/admin/static/js/backend/custom.js' type='text/javascript'%3E%3C/script%3E"));
 

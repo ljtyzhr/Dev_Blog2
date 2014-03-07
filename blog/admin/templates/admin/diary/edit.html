@@ -52,13 +52,21 @@
             </div>
             <h5>Categories</h5>
           </header>
-          <div id="div-2" class="accordion-body body in">
+          <div id="category_list" class="accordion-body body in">
             {% for c in categories %}
             <div class="checkbox anim-checkbox">
               <input type="checkbox" id="{{ c.pk }}" class="primary">
               <label for="{{ c.pk }}">{{ c.name }}</label>
             </div>
             {% endfor %}
+            <div id="category-adder">
+              <h5><a id="category-add-toggle" href="javascript:void(0);">+ Add New Category</a></h5>
+              <p id="category-add" class="category-add hide">
+                <input type="text" name="newcategory" id="newcategory" class="form-control">
+                <br/>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="category-add-submit">Add New Category</a>
+              </p>
+            </div><!--./category-adder-->
           </div>
         </div><!-- /.box -->
         <div class="box dark">
@@ -79,9 +87,9 @@
 {% endblock %}
 {% block script %}
 <script>
-  $(function() { 
+  $(function() {
     formWysiwyg();
-    formGeneral(); 
+    formGeneral();
   });
 </script>
 {% endblock %}

@@ -242,7 +242,8 @@ class CategoryFunctions(object):
             None
         """
         try:
-            return Category(name=cat_name).save()
+            category = Category(name=cat_name)
+            return category.save()
         except NotUniqueError:
             return 'category name not unique'
 

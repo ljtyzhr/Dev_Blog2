@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from werkzeug.security import check_password_hash
 from flask import Blueprint, render_template, url_for, request, redirect
 from flask.ext.login import (LoginManager, login_required,
@@ -114,7 +115,7 @@ def diary_list():
         Diary object
     """
     profile = user_func.get_profile()
-    diaries = diary_func.get_all_diaries() 
+    diaries = diary_func.get_all_diaries()
     return render_template(templates["diary_list"], diaries=diaries,
                            profile=profile)
 
@@ -151,3 +152,25 @@ def diary_edit(diary_id=None):
     categories = cat_func.get_all_categories()
     return render_template(templates["diary_edit"], profile=profile,
                            categories=categories)
+
+
+@admin.route('/category/add', methods=['POST'])
+def category_new():
+    """Admin Add New Category function.
+
+    Methods:
+        POST
+
+    Args:
+        cat_name: string
+
+    Return:
+        success: true/false
+        cid: category_object_id
+    """
+    if request.method == 'POST':
+        cat_name = request.form["cat_name"]
+        cat = cat_func.add_new_category(cat_name)
+
+        return json.dumps({'success': 'true', 'cat_id': str(cat.pk),
+                          'cat_name': cat_name})

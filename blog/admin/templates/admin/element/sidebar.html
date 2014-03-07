@@ -1,7 +1,7 @@
 <div id="left">
   <div class="media user-media">
     <a class="user-link" href="">
-      <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{ profile.avatar }}">
+      <img class="media-object img-thumbnail user-img" alt="User Picture" src="{% if profile.avatar %} {{ profile.avatar }} {% else %} /admin/static/img/user.gif {% endif %}">
     </a> 
   </div>
 
@@ -27,6 +27,14 @@
         <li class="">
           <a href="{{ url_for('admin.diary_edit', diary_id='new') }}">
             <i class="fa fa-angle-right"></i>&nbsp;Add New</a> 
+        </li>
+        <li class="">
+          <a href="{{ url_for('admin.diary_list') }}">
+            <i class="fa fa-credit-card"></i>&nbsp;Categories</a> 
+        </li>
+        <li class="">
+          <a href="{{ url_for('admin.diary_edit', diary_id='new') }}">
+            <i class="fa fa-credit-card"></i>&nbsp;Tags</a> 
         </li>
       </ul>
     </li>
