@@ -26,9 +26,9 @@
               <tbody>
                 {% for i in diaries %}
                 <tr>
-                  <td>{{ i.title }}</td>
+                  <td><a href="{{ url_for('admin.diary_edit', diary_id=i.pk) }}">{{ i.title }}</a></td>
                   <td>{{ i.author.name }}</td>
-                  <td>{{ i.category }}</td>
+                  <td>{% for c in i.categories %} {{ c }} &nbsp; {% endfor %}</td>
                   <td>{% for t in i.tags %}{{ t }} {% endfor %}</td>
                   <td>{{ i.comments|count }}</td>
                   <td>{{ i.publish_time.strftime('%Y-%m-%d') }}</td>

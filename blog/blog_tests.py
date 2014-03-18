@@ -99,12 +99,11 @@ class BlogTestCase(unittest.TestCase):
         content = '[S](http://s/)'
         categories = ['uncategoried', 'new category']
         tags = ['tag1', 'tag2', 'tags']
-        author = user_func.get_profile()
         status = 'Draft'
 
         diary = diary_func.edit_diary(permalink=permalink, title=title,
                                       content=content, categories=categories,
-                                      tags=tags, author=author, status=status)
+                                      tags=tags, status=status)
 
         self.assertEqual('new-post', diary.permalink)
         self.assertEqual(title, diary.title)
@@ -115,7 +114,22 @@ class BlogTestCase(unittest.TestCase):
         self.assertEqual(None, diary.publish_time)
         self.assertEqual('<p><a href="http://s/">S</a></p>', diary.html)
         self.assertEqual('S', diary.pure_content)
-        self.assertEqual(author, diary.author)
+
+    def test_diary_get_by_id(self):
+        permalink = 'New post 2'
+        title = 'New Post'
+        content = '[S](http://s/)'
+        categories = ['uncategoried', 'new category']
+        tags = ['tag1', 'tag2', 'tags']
+        status = 'Draft'
+
+        diary = diary_func.edit_diary(permalink=permalink, title=title,
+                                      content=content, categories=categories,
+                                      tags=tags, status=status)
+
+        test_diary = diary_func.get_by_id(diary_id=diary.pk)
+
+        self.assertEqual(test_diary, diary)
 
 
 if __name__ == '__main__':

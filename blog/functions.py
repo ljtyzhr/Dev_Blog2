@@ -39,7 +39,7 @@ class DiaryFunctions(object):
         """Return Total diaries objects."""
         return Diary.objects.order_by(order)
 
-    def get_diary(self, diary_id):
+    def get_by_id(self, diary_id):
         """Diary detail.
         Only return diary detail by diary_id.
 
@@ -140,7 +140,7 @@ class DiaryFunctions(object):
         return prev, next, diaries[start:end]
 
     def edit_diary(self, permalink, title, content, categories, tags,
-                   author, status='Published'):
+                   status='Published'):
         """ Edit diary from admin
 
         receives title, content(markdown), tags and cagetory
@@ -153,7 +153,6 @@ class DiaryFunctions(object):
             content: markdown string
             cagetories: list
             tags: list
-            author: author profile object
             status: 'Published/Draft', default => 'Published'
 
         Save:
@@ -187,7 +186,6 @@ class DiaryFunctions(object):
         diary.author = user_func.get_profile()
         diary.categories = categories
         diary.tags = tags
-        diary.author = author
         diary.status = status
 
         return diary.save()
@@ -241,6 +239,8 @@ class CategoryFunctions(object):
         Return:
             None
         """
+        cat_name = site_helpers.secure_filename(cat_name)
+
         try:
             category = Category(name=cat_name)
             return category.save()

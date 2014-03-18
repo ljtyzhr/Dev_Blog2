@@ -5,8 +5,7 @@ from flask import Blueprint, render_template, url_for, request, redirect
 from flask.ext.login import (LoginManager, login_required,
                              login_user, logout_user, UserMixin)
 
-from functions import (user_func, diary_func, cat_func, page_func,
-                       other_func)
+from functions import (user_func, diary_func, cat_func)
 from templates import templates
 
 admin = Blueprint('admin', __name__, template_folder='templates',
@@ -62,7 +61,6 @@ def login():
             none
     """
     if request.method == "POST" and "username" in request.form:
-        username = request.form["username"]
         password = request.form["password"]
         user = user_func.get_profile()
 
@@ -125,33 +123,37 @@ def diary_list():
 def diary_edit(diary_id=None):
     """ Edit diary from admin
 
-    receives title, content(html), tags and cagetory
-    save title, content(html), pure content(further use), tags and cagetory
-    also auto save author as current_user.
-
-    this method will auto save new Category or Tag if not exist otherwise save
-    in existed none with push only diary_object
+    receives title, content(markdown), tags and cagetories
 
     Args:
         diary_id: diary_id
         title: string
-        html: string
-        cagetory: string
-        tags: list
-
-    Save:
-        title: string
-        html: string
-        content: string without html tags
-        category: string
-        tags: list
-        summary: first 80 characters in content with 3 dots in the end
-        author: current_user_object
+        permalink: string
+        content: markdown string
+        cagetory: list
+        tags: string
     """
-    profile = user_func.get_profile()
-    categories = cat_func.get_all_categories()
-    return render_template(templates["diary_edit"], profile=profile,
-                           categories=categories)
+    if request.method == 'POST':
+        title = request.form["title"]
+        categories = request.form.getlist("categories")
+        tags = request.form["tags"]
+        permalink = request.form["permalink"]
+        content = request.form["content"]
+
+        splited_tags = tags.split(',')
+
+        diary_func.edit_diary(permalink, title, content, categories,
+                              splited_tags)
+
+        return redirect(url_for('admin.diary_list'))
+
+    else:
+        diary = diary_func.get_by_id(diary_id=diary_id)
+
+        profile = user_func.get_profile()
+        categories = cat_func.get_all_categories()
+        return render_template(templates["diary_edit"], profile=profile,
+                               categories=categories, diary=diary)
 
 
 @admin.route('/category/add', methods=['POST'])

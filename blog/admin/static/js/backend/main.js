@@ -1,6 +1,6 @@
 /**
 * Bootstrap-Admin-Template v2.1.3
-* Author : [object Object] 
+* Author : [object Object]
 * Copyright 2014
 * Licensed under ,, (,,)
 */
@@ -36,9 +36,9 @@ $(function () {
     $('li.accordion-group > a').on('click', function (e) {
         $(this).children('span').children('i').toggleClass('icon-angle-down');
     });
-    
+
     $('#menu').metisMenu();
-    
+
 });
 
 ;(function ($, window, document, undefined) {
@@ -47,7 +47,7 @@ $(function () {
         defaults = {
             toggle: true
         };
-        
+
     function Plugin(element, options) {
         this.element = element;
         this.settings = $.extend({}, defaults, options);
@@ -119,8 +119,20 @@ function formWysiwyg() {
 
 function formGeneral() {
     "use strict";
-    
+
     /*----------- BEGIN tagsInput CODE -------------------------*/
     $('#tags').tagsInput();
     /*----------- END tagsInput CODE -------------------------*/
+}
+
+function cateChecked () {
+    var checked_categories = $("#checked_categories").val();
+
+    var list = checked_categories.split(',');
+
+    for (var i = 0; i < list.length - 1; i ++ ) {
+        var self = list[i];
+        $('.anim-checkbox').find("input[value='" + self +"']").attr("checked", true);
+    }
+
 }
