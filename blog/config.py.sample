@@ -5,6 +5,7 @@ import random
 class Config(object):
     DEBUG = False
     MONGODB_SETTINGS = {'DB': 'dev_blog2'}
+    TEST_MONGODB_SETTINGS = {'DB': 'dev_blog_testdb'}
     SECRET_KEY = 'lask+mongoengine=<3'
     MAIN_TITLE = u'Sea_Kudo的博客'
     SITE_URL = 'http://tuzii.me'
