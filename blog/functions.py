@@ -4,7 +4,7 @@ import datetime
 import PyRSS2Gen
 import markdown
 from werkzeug.security import generate_password_hash
-from mongoengine.errors import NotUniqueError
+from mongoengine.errors import NotUniqueError, ValidationError
 
 from config import Config
 from model.models import User, Diary, Category, Page
@@ -49,14 +49,36 @@ class DiaryFunctions(object):
         Return:
             diary: diary object
         """
-        return Diary.objects(pk=diary_id).first()
+        try:
+            diary = Diary.objects(pk=diary_id).first()
+        except ValidationError:
+            diary = None
 
-    def get_diary_width_navi(self, diary_id):
+        return diary
+
+    def get_by_permalink(self, permalink):
+        """Diary detail.
+        Only return diary detail by permalink.
+
+        Args:
+            permalink: permalink string
+
+        Return:
+            diary: diary object
+        """
+        try:
+            diary = Diary.objects(permalink=permalink).first()
+        except ValidationError:
+            diary = None
+
+        return diary
+
+    def get_diary_width_navi(self, permalink):
         """Diary Detail Width page navi boolean.
         get diary detail and if there should be prev or next page.
 
         Args:
-            diary_id: objectID
+            permalink: permalink string
 
         Return:
             diary: diary object
@@ -64,7 +86,7 @@ class DiaryFunctions(object):
             next: boolean, can be used as 'next' logic
         """
         prev = next = True
-        diary = self.get_diary(diary_id)
+        diary = self.get_by_permalink(permalink)
         if diary == self.get_first_diary():
             next = False
         if diary == self.get_last_diary():
@@ -90,18 +112,18 @@ class DiaryFunctions(object):
         return Diary.objects(publish_time__gt=pub_time
                              ).order_by('-publish_time').first()
 
-    def get_next_or_prev_diary(self, prev_or_next, diary_id):
+    def get_next_or_prev_diary(self, prev_or_next, permalink):
         """Diary route prev or next function.
         Use publish_time to determin what`s the routed diary.
 
         Args:
             prev_or_next: string 'prev' or 'next'
-            diary_id: objectID
+            permalink: permalink string
 
         Return:
             next_diary: routed diary object
         """
-        diary = self.get_diary(diary_id)
+        diary = self.get_by_permalink(permalink=permalink)
 
         if prev_or_next == 'prev':
             next_diary = self.get_prev_diary(diary.publish_time)

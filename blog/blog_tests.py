@@ -13,7 +13,7 @@ class BlogTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        connect(Config.MONGODB_SETTINGS.get('DB'))
+        connect(Config.TEST_MONGODB_SETTINGS.get('DB'))
         self.db = get_db()
         self.username = "test_user"
         self.password = "test_password"

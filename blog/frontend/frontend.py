@@ -38,15 +38,14 @@ def home():
                            pages=pages, profile=profile, next=next)
 
 
-@frontend.route('/diary/<diary_id>/<diary_title>')
-def diary_detail(diary_id, diary_title=None):
+@frontend.route('/diary/<permalink>')
+def diary_detail(permalink):
     """ Diary Detail Page.
 
     show diary details.
 
     Args:
-        diary_id: ObjectedId
-        diary_title: string used for SEO Only
+        permalink: permalink string
 
     Return:
         diary_detail: diary_object
@@ -59,7 +58,7 @@ def diary_detail(diary_id, diary_title=None):
         next: if has next diary
     """
     profile = user_func.get_profile()
-    prev, next, diary = diary_func.get_diary_width_navi(diary_id=diary_id)
+    prev, next, diary = diary_func.get_diary_width_navi(permalink=permalink)
     categories = cat_func.get_all_categories('-publish_time')
     pages = page_func.get_all_pages('-publish_time')
 
@@ -72,26 +71,25 @@ def diary_detail(diary_id, diary_title=None):
                            pages=pages, profile=profile, prev=prev, next=next)
 
 
-@frontend.route('/diary/route/<prev_or_next>/<diary_id>')
-def diary_prev_or_next(prev_or_next, diary_id):
+@frontend.route('/diary/route/<prev_or_next>/<permalink>')
+def diary_prev_or_next(prev_or_next, permalink):
     """ Diary Next_Or_Prev page function.
 
     show next or previous diary details.
 
     Args:
         prev_or_next: string 'next' or 'prev'
-        diary_id: objectID
+        permalink: permalink string
 
     Return:
         redirect: diary_detail_page
     """
 
-    next_diary = diary_func.get_next_or_prev_diary(prev_or_next, diary_id)
+    next_diary = diary_func.get_next_or_prev_diary(prev_or_next, permalink)
 
     try:
         return redirect(
-            url_for('frontend.diary_detail', diary_id=next_diary.pk,
-                    diary_title=next_diary.title))
+            url_for('frontend.diary_detail', permalink=next_diary.permalink))
     except Exception as e:
         print str(e)
         abort(404)
@@ -129,14 +127,14 @@ def diary_list(page_num=None, cat_name=None, tag_name=None):
     if not page_num:
         page_num = 1
 
-    start = (int(page_num) - 1) * page_size 
+    start = (int(page_num) - 1) * page_size
     end = int(page_num) * page_size
 
     if tag_name:
         pass
     elif cat_name:
         prev, next, diaries = cat_func.get_diary_list(cat_name, start, end)
-        tpl = 'cat_list' 
+        tpl = 'cat_list'
     else:
         prev, next, diaries = diary_func.get_diary_list(start, end)
         tpl = 'diary_list'

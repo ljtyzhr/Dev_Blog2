@@ -5,7 +5,7 @@
         <header class="entry-header">
             <h1 class="entry-title">{{ self.title() }}</h1>
             <div class="comments-link">
-                <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="Comment on {{ diary.title }}">{{ diary.comments|count }} Replies</a>
+                <a href="{{ url_for('frontend.diary_detail', permalink=diary.permalink) }}" title="Comment on {{ diary.title }}">{{ diary.comments|count }} Replies</a>
             </div><!-- .comments-link -->
         </header><!-- .entry-header -->
 
@@ -17,7 +17,7 @@
             This entry was posted in
             <a href="{{ url_for('frontend.diary_list', cat_name=diary.category) }}" title="View all posts in {{ diary.category }}" rel="category tag">{{ diary.category }}</a>
             On
-            <a href="{{ url_for('frontend.diary_detail', diary_id=diary.pk, diary_title=diary.title) }}" title="{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
+            <a href="{{ url_for('frontend.diary_detail', permalink=diary.permalink) }}" title="{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}" rel="bookmark">
                 <time class="entry-date" datetime="{{ diary.publish_time }}">{{ diary.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
             </a>
             <span class="by-author">By
@@ -32,10 +32,10 @@
     <nav class="nav-single">
         <h3 class="assistive-text">Post navigation</h3>
         {% if prev %}
-        <span class="nav-previous"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='prev', diary_id=diary.pk) }}" rel="prev"><span class="meta-nav">←</span>Previous</a></span>
+        <span class="nav-previous"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='prev', permalink=diary.permalink) }}" rel="prev"><span class="meta-nav">←</span>Previous</a></span>
         {% endif %}
         {% if next %}
-        <span class="nav-next"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='next', diary_id=diary.pk) }}" rel="next">Next<span class="meta-nav">→</span></a></span>
+        <span class="nav-next"><a href="{{ url_for('frontend.diary_prev_or_next', prev_or_next='next', permalink=diary.permalink) }}" rel="next">Next<span class="meta-nav">→</span></a></span>
         {% endif %}
     </nav><!-- .nav-single -->
 

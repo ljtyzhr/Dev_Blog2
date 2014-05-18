@@ -2,10 +2,10 @@
 <article class="post">
   <header class="entry-header">
       <h1 class="entry-title">
-          <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" rel="bookmark">{{ d.title }}</a>
+          <a href="{{ url_for('frontend.diary_detail', permalink=d.permalink) }}" rel="bookmark">{{ d.title }}</a>
       </h1>
       <div class="comments-link">
-          <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" title="Comment on {{ d.title }}">{{ d.comments|count }} Replies</a>
+          <a href="{{ url_for('frontend.diary_detail', permalink=d.permalink) }}" title="Comment on {{ d.title }}">{{ d.comments|count }} Replies</a>
       </div><!-- .comments-link -->
   </header><!-- .entry-header -->
 
@@ -17,7 +17,7 @@
       This entry was posted in
       <a href="{{ url_for('frontend.diary_list', cat_name=d.category) }}" title="View all posts in {{ d.category }}" rel="category tag">{{ d.category }}</a>
       on
-      <a href="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" title="{{ url_for('frontend.diary_detail', diary_id=d.pk, diary_title=d.title) }}" rel="bookmark">
+      <a href="{{ url_for('frontend.diary_detail', permalink=d.permalink) }}" title="{{ url_for('frontend.diary_detail', permalink=d.permalink) }}" rel="bookmark">
           <time class="entry-date" datetime="{{ d.publish_time }}">{{ d.publish_time.strftime('%Y-%m-%d %H:%M') }}</time>
       </a>
       <span class="by-author">By
