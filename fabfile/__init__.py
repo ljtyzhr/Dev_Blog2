@@ -20,8 +20,13 @@ def deploy():
 
 
 @task
-def test():
+def start():
     local("python blog/runserver.py --port=8000")
+
+
+@task
+def test():
+    local("python blog/blog_tests.py")
 
 
 @task
