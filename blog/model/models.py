@@ -15,16 +15,6 @@ class User(db.Document):
     created_at = db.DateTimeField(default=datetime.now, required=True)
 
 
-class Category(db.Document):
-    name = db.StringField(max_length=120, required=True, unique=True)
-    publish_time = db.DateTimeField(default=datetime.now, required=True)
-
-    meta = {
-        'indexes': ['name'],
-        'ordering': ['-publish_time']
-    }
-
-
 class Post(db.Document):
     permalink = db.StringField(required=True, unique=True)
     title = db.StringField(required=True)
@@ -70,6 +60,17 @@ class Photo(db.Document):
     album_name = db.StringField(default='uncategorized')
     description = db.StringField()
     publish_time = db.DateTimeField(default=datetime.now, required=True)
+
+
+class Category(db.Document):
+    name = db.StringField(max_length=120, required=True, unique=True)
+    diaries = db.SortedListField(db.ReferenceField(Diary))
+    publish_time = db.DateTimeField(default=datetime.now, required=True)
+
+    meta = {
+        'indexes': ['name'],
+        'ordering': ['-publish_time']
+    }
 
 
 class Tag(db.Document):

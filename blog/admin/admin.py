@@ -176,3 +176,26 @@ def category_new():
 
         return json.dumps({'success': 'true', 'cat_id': str(cat.pk),
                           'cat_name': cat_name})
+
+
+@admin.route('/category/list')
+@login_required
+def category_list():
+    """Admin Category lit page.
+
+    show all categories.
+
+    Methods:
+        GET
+
+    Args:
+        none
+
+    Returns:
+        Category object
+    """
+    categories = cat_func.get_all_categories()
+    profile = user_func.get_profile()
+
+    return render_template(templates["category_list"], categories=categories,
+                           profile=profile)

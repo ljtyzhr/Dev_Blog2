@@ -2,7 +2,7 @@
   <div class="media user-media">
     <a class="user-link" href="">
       <img class="media-object img-thumbnail user-img" alt="User Picture" src="{% if profile.avatar %} {{ profile.avatar }} {% else %} /admin/static/img/user.gif {% endif %}">
-    </a> 
+    </a>
   </div>
 
   <!-- #menu -->
@@ -12,77 +12,77 @@
     <li class="">
       <a href="{{ url_for('admin.index') }}">
         <i class="fa fa-dashboard"></i>
-        <span class="link-title">Dashboard</span> 
-      </a> 
+        <span class="link-title">Dashboard</span>
+      </a>
     </li>
     <li class="">
       <a href="javascript:;">
         <i class="fa fa-pencil"></i>&nbsp;Posts
-      </a> 
+      </a>
       <ul class="collapse">
         <li class="">
           <a href="{{ url_for('admin.diary_list') }}">
-            <i class="fa fa-credit-card"></i>&nbsp;All Posts</a> 
+            <i class="fa fa-credit-card"></i>&nbsp;All Posts</a>
         </li>
         <li class="">
           <a href="{{ url_for('admin.diary_edit', diary_id='new') }}">
-            <i class="fa fa-angle-right"></i>&nbsp;Add New</a> 
+            <i class="fa fa-angle-right"></i>&nbsp;Add New</a>
         </li>
         <li class="">
-          <a href="{{ url_for('admin.diary_list') }}">
-            <i class="fa fa-credit-card"></i>&nbsp;Categories</a> 
+          <a href="{{ url_for('admin.category_list') }}">
+            <i class="fa fa-credit-card"></i>&nbsp;Categories</a>
         </li>
         <li class="">
           <a href="{{ url_for('admin.diary_edit', diary_id='new') }}">
-            <i class="fa fa-credit-card"></i>&nbsp;Tags</a> 
+            <i class="fa fa-credit-card"></i>&nbsp;Tags</a>
         </li>
       </ul>
     </li>
     <li class="">
       <a href="javascript:;">
         <i class="fa fa-book"></i>&nbsp;Pages
-      </a> 
+      </a>
       <ul class="collapse">
         <li class="">
           <a href="{{ url_for('admin.diary_list') }}">
-            <i class="fa fa-credit-card"></i>&nbsp;All Pages</a> 
+            <i class="fa fa-credit-card"></i>&nbsp;All Pages</a>
         </li>
         <li class="">
           <a href="{{ url_for('admin.diary_edit', diary_id='new') }}">
-            <i class="fa fa-angle-right"></i>&nbsp;Add New</a> 
+            <i class="fa fa-angle-right"></i>&nbsp;Add New</a>
         </li>
       </ul>
     </li>
     <li class="">
       <a href="">
         <i class="fa fa-comments"></i>
-        <span class="link-title">Comments</span> 
-      </a> 
+        <span class="link-title">Comments</span>
+      </a>
     </li>
     <li class="nav-divider"></li>
     <li class="">
       <a href="">
         <i class="fa fa-eraser"></i>
-        <span class="link-title">Appearance</span> 
-      </a> 
+        <span class="link-title">Appearance</span>
+      </a>
     </li>
     <li class="">
       <a href="">
         <i class="fa fa-leaf"></i>
-        <span class="link-title">Plugins</span> 
-      </a> 
+        <span class="link-title">Plugins</span>
+      </a>
     </li>
     <li class="">
       <a href="">
         <i class="fa fa-user-md"></i>
-        <span class="link-title">Users</span> 
-      </a> 
+        <span class="link-title">Users</span>
+      </a>
     </li>
     <li class="">
       <a href="">
         <i class="fa fa-cogs"></i>
-        <span class="link-title">Settings</span> 
-      </a> 
+        <span class="link-title">Settings</span>
+      </a>
     </li>
   </ul><!-- /#menu -->
 </div>

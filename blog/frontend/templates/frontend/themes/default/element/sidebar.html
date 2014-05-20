@@ -1,10 +1,9 @@
 <aside id="search-2" class="widget widget_search">
-  <form role="search" method="get" id="searchform" class="searchform" action="http://127.0.0.1:8888/wordpress/">
-    <div>
-      <label class="screen-reader-text" for="s">Search：</label>
-      <input type="text" value="" name="s" id="s" />
-      <input type="submit" id="searchsubmit" value="Search" />
-    </div>
+  <form role="search" action="http://google.com/search" method="get" accept-charset="utf-8" id="search_form">
+    <label class="screen-reader-text" for="s">Search：</label>
+    <input class="search" type="text" name="q" results="0" autocomplete="true">
+    <input type="hidden" name="q" value="site:{{ config['SITE_URL'] }}">
+    <input type="submit" id="searchsubmit" value="Search" />
   </form>
 </aside>
 
@@ -37,9 +36,11 @@
 <aside id="categories-2" class="widget widget_categories">
 <h3 class="widget-title">Categories</h3>
 <ul>
+  {% for c in categories %}
   <li class="cat-item cat-item-4">
-    <a href="http://127.0.0.1:8888/wordpress/category/ellus/" title="View all posts filed under Ellus">ellus</a>
+    <a href="{{ url_for('frontend.diary_list', cat_name=c.name) }}" title="View all posts filed under {{ c.name }}">{{ c.name }}</a>
   </li>
+  {% endfor %}
 </ul>
 </aside>
 

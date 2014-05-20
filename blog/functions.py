@@ -191,10 +191,17 @@ class DiaryFunctions(object):
         """
         permalink = site_helpers.secure_filename(permalink)
 
-        try:
+        diary = Diary.objects(permalink=permalink).first()
+
+        if diary is None:
             diary = Diary(permalink=permalink)
-        except NotUniqueError:
-            diary = Diary.objects(permalink=permalink).first()
+        else:
+            for c in diary.categories:
+                Category.objects(name=c).update_one(pull__diaries=diary)
+
+        # update category model
+        for c in categories:
+            Category.objects(name=c).update_one(push__diaries=diary)
 
         html = markdown.markdown(content)
 
